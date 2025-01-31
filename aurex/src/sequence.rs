@@ -1,14 +1,19 @@
-use std::{collections::VecDeque, fmt, thread, time::Duration};
+use std::{collections::VecDeque, fmt, rc::Rc, sync::Arc, thread, time::Duration};
 
 use midir::MidiOutputConnection;
 use rand::seq::IndexedRandom;
 use wmidi::{MidiMessage, U7};
 
+use crate::theory::Interval;
+
+// TODO: add looping
+// TODO: add sequence combining
+
 #[derive(Debug)]
 pub struct Sequence {
     /// A collection of sequenced notes with monotonically increasing time field
     notes: VecDeque<SequencedNote>,
-    bpm: u64,
+    pub bpm: u64,
     end_time: Duration,
 }
 
@@ -40,6 +45,47 @@ impl Sequence {
 
         self.notes.push_back(note);
 
+        self.end_time
+    }
+
+    pub fn add_simultaneous(&mut self, note: NoteWithDuration) -> Duration {
+        let last_note_time = self
+            .notes
+            .back()
+            .map_or(Duration::from_millis(0), |n| n.time);
+
+        let note = SequencedNote {
+            time: last_note_time,
+            note: note.note,
+            duration: note.duration,
+            channel: note.channel,
+        };
+
+        self.end_time = last_note_time + note.duration.time(self.bpm);
+
+        self.notes.push_back(note);
+
+        self.end_time
+    }
+
+    pub fn add_chord(
+        &mut self,
+        notes: &Vec<Play>,
+        duration: NoteDuration,
+        channel: wmidi::Channel,
+    ) -> Duration {
+        for note in notes {
+            let sequenced_note = SequencedNote {
+                time: self.end_time,
+                note: note.clone(),
+                duration,
+                channel,
+            };
+
+            self.notes.push_back(sequenced_note);
+        }
+
+        self.end_time += duration.time(self.bpm);
         self.end_time
     }
 
@@ -95,14 +141,16 @@ impl Sequence {
 
         let mut time = Duration::from_millis(0);
         for action in actions {
-            println!("{:?}", action);
-            dbg!(action.time, time);
             let sleep_time = action.time - time;
             thread::sleep(sleep_time);
+            println!("{:?}", action);
             conn.send(&action.message.to_vec()).unwrap();
             time = action.time;
         }
     }
+
+    /// Adds the given sequence to the current one, such that they play simultaneously.
+    pub fn combine(&mut self, other: Sequence) {}
 }
 
 #[derive(Debug)]
@@ -127,10 +175,11 @@ pub struct SequencedNote {
 
 impl SequencedNote {}
 
+#[derive(Clone)]
 pub enum Play {
     Note(wmidi::Note),
     RandomNote(Vec<wmidi::Note>),
-    ClosureNote(Box<dyn Fn(&Vec<wmidi::Note>) -> Option<wmidi::Note>>),
+    ClosureNote(Rc<dyn Fn(&Vec<wmidi::Note>) -> Option<wmidi::Note>>),
 }
 
 macro_rules! note {
@@ -148,6 +197,17 @@ impl Play {
             Play::RandomNote(vec) => vec.choose(&mut rand::rng()).copied(),
             Play::ClosureNote(function) => function(notes),
         }
+    }
+
+    /// Build a chord from a given root and the given intervals. Only works for Play::Note
+    pub fn chord(&self, intervals: &Vec<Interval>) -> Vec<Play> {
+        // check if this is Note
+        // if so, get the note's number
+        // for each interval, the next note is the previous one + that interval
+        // e.g. to contsruct a maj7 pass in the intervals MajorThird, MinorThird, MajorThird
+        // TODO: create a chord function that uses absolute intervals: MajorThird, PerfectFifth, MajorSeventh
+        // TODO: predefine constant slices with common chord constructions
+        todo!()
     }
 
     pub fn a_flat(octave: i8) -> Self {
@@ -229,7 +289,7 @@ impl fmt::Debug for Play {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum NoteDuration {
     Whole,
     Half,
@@ -250,5 +310,16 @@ impl NoteDuration {
             NoteDuration::QuarterTriplet => ns_per_beat / 3,
             NoteDuration::Sixteenth => ns_per_beat / 4,
         })
+    }
+
+    pub fn beats(&self) -> f64 {
+        match self {
+            NoteDuration::Whole => 4.0,
+            NoteDuration::Half => 2.0,
+            NoteDuration::Quarter => 1.0,
+            NoteDuration::Eigth => 0.5,
+            NoteDuration::QuarterTriplet => 1. / 3.,
+            NoteDuration::Sixteenth => 0.25,
+        }
     }
 }
