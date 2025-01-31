@@ -1,9 +1,11 @@
 use std::rc::Rc;
 
-use aurex::sequence::{NoteDuration, NoteWithDuration, Play, Sequence};
+use aurex::{
+    sequence::{NoteDuration, NoteWithDuration, Play, Sequence},
+    theory::chords,
+};
 use wmidi::{Channel, Note};
 
-// TODO: drum loops
 // TODO: a first practice sequence: drums + a fourth or fifth above the given root
 
 /// Plays a C major chord, then either the C above or the C below that chord twice.
@@ -81,10 +83,10 @@ fn add_chords() {
     let mut conn = aurex::midi::open_midi_connection("128:0");
     let mut sequence = Sequence::new(78);
 
-    let c_major = vec![Play::c(4), Play::e(4), Play::g(4)];
-    let d_minor = vec![Play::d(4), Play::f(4), Play::a(4)];
-    let e_minor = vec![Play::e(4), Play::g(4), Play::b(4)];
-    let f_major = vec![Play::f(4), Play::a(4), Play::c(5)];
+    let c_major = Play::c(4).chord(chords::MAJOR);
+    let d_minor = Play::d(4).chord(chords::MINOR);
+    let e_minor = Play::e(4).chord(chords::MINOR);
+    let f_major = Play::f(4).chord(chords::MAJOR);
 
     sequence.add_chord(&c_major, NoteDuration::Half, Channel::Ch1);
     sequence.add_chord(&c_major, NoteDuration::Eigth, Channel::Ch1);

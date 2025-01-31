@@ -20,6 +20,16 @@ pub const KICK: ChannelNote = ChannelNote {
     channel: wmidi::Channel::Ch10,
 };
 
+pub const METRONOME_TICK: ChannelNote = ChannelNote {
+    note: Play::Note(wmidi::Note::B1), // TODO: which note?
+    channel: wmidi::Channel::Ch10,
+};
+
+pub const METRONOME_EMPH: ChannelNote = ChannelNote {
+    note: Play::Note(wmidi::Note::B1), // TODO: which note?
+    channel: wmidi::Channel::Ch10,
+};
+
 pub fn count_off(bpm: u64) -> Sequence {
     let mut sequence = Sequence::new(bpm);
 
@@ -54,4 +64,16 @@ pub fn basic_backbeat(bpm: u64) -> Sequence {
     snare.add_to_end(SNARE.with_duration(NoteDuration::Quarter));
 
     hats.combine_simultaneous(kick).combine_simultaneous(snare)
+}
+
+pub fn metronome_emphasis(bpm: u64) -> Sequence {
+    let mut sequence = Sequence::new(bpm);
+
+    sequence.add_to_end(METRONOME_EMPH.with_duration(NoteDuration::Quarter));
+
+    for _ in 0..3 {
+        sequence.add_to_end(METRONOME_TICK.with_duration(NoteDuration::Quarter));
+    }
+
+    sequence
 }

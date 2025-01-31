@@ -11,9 +11,6 @@ use wmidi::{MidiMessage, U7};
 
 use crate::theory::Interval;
 
-// TODO: add looping
-// TODO: add sequence combining
-
 #[derive(Debug)]
 pub struct Sequence {
     /// A collection of sequenced notes with monotonically increasing time field
@@ -239,6 +236,7 @@ impl SequencedNote {}
 
 #[derive(Clone)]
 pub enum Play {
+    Rest,
     Note(wmidi::Note),
     RandomNote(Vec<wmidi::Note>),
     ClosureNote(Rc<dyn Fn(&Vec<wmidi::Note>) -> Option<wmidi::Note>>),
@@ -255,21 +253,58 @@ macro_rules! note {
 impl Play {
     pub fn note(&self, notes: &Vec<wmidi::Note>) -> Option<wmidi::Note> {
         match self {
+            Play::Rest => None,
             Play::Note(note) => Some(*note),
             Play::RandomNote(vec) => vec.choose(&mut rand::rng()).copied(),
             Play::ClosureNote(function) => function(notes),
         }
     }
 
-    /// Build a chord from a given root and the given intervals. Only works for Play::Note
-    pub fn chord(&self, _intervals: &Vec<Interval>) -> Vec<Play> {
-        // check if this is Note
-        // if so, get the note's number
+    /// Build a chord from a given root and the given intervals. Only works for Play::Note.
+    /// e.g. to construct a maj7 pass in the intervals MajorThird, MinorThird, MajorThird
+    pub fn chord_relative(&self, intervals: &[Interval]) -> Vec<Play> {
+        let Self::Note(note) = self else {
+            return vec![];
+        };
+
+        let note_number = *note as u8;
+        let mut new_note_number = note_number;
+        let mut notes = vec![];
         // for each interval, the next note is the previous one + that interval
-        // e.g. to contsruct a maj7 pass in the intervals MajorThird, MinorThird, MajorThird
-        // TODO: create a chord function that uses absolute intervals: MajorThird, PerfectFifth, MajorSeventh
-        // TODO: predefine constant slices with common chord constructions
-        todo!()
+        for interval in intervals {
+            new_note_number += note_number + interval.semitones();
+            notes.push(Play::Note(wmidi::Note::from_u8_lossy(new_note_number)));
+        }
+
+        notes
+    }
+
+    /// Build a chord from a given root and the constituent intervals. Only works for Play::Note..
+    /// e.g. to construct a maj7 pass in the intervals MajorThird, PerfectFifth, MajorSeventh
+    pub fn chord(&self, intervals: &[Interval]) -> Vec<Play> {
+        let Self::Note(note) = self else {
+            return vec![];
+        };
+
+        let note_number = *note as u8;
+        let mut new_note_number = note_number;
+        let mut notes = vec![];
+        // for each interval, the next note is the previous one + that interval
+        for interval in intervals {
+            new_note_number += note_number + interval.semitones();
+            notes.push(Play::Note(wmidi::Note::from_u8_lossy(new_note_number)));
+        }
+
+        notes
+    }
+
+    /// Add a duration to the note. Defaults the channel to Channel 1
+    pub fn with_duration(self, duration: NoteDuration) -> NoteWithDuration {
+        NoteWithDuration {
+            note: self,
+            duration,
+            channel: wmidi::Channel::Ch1,
+        }
     }
 
     pub fn a_flat(octave: i8) -> Self {
@@ -344,6 +379,7 @@ impl Play {
 impl fmt::Debug for Play {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
+            Play::Rest => f.write_str("Rest"),
             Play::Note(note) => f.debug_tuple("Note").field(note).finish(),
             Play::RandomNote(notes) => f.debug_tuple("RandomNote").field(notes).finish(),
             Play::ClosureNote(_) => f.write_str("ClosureNote(<function>)"),
