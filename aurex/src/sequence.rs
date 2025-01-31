@@ -127,7 +127,6 @@ impl Sequence {
     /// Takes the current notes in the sequence and loops them a given amount of times.
     /// The end time is updated to reflect the looping.
     pub fn r#loop(mut self, loops: u32) -> Self {
-        dbg!(self.end_time);
         let mut notes = VecDeque::with_capacity(self.notes.len() * loops as usize);
 
         for iteration in 0..loops {
@@ -255,7 +254,24 @@ impl Play {
         match self {
             Play::Rest => None,
             Play::Note(note) => Some(*note),
-            Play::RandomNote(vec) => vec.choose(&mut rand::rng()).copied(),
+            Play::RandomNote(vec) => {
+                // TODO: ugly
+                if vec.len() > 2 {
+                    if let Some(note) = notes.last() {
+                        let vec_to_choose_from: Vec<_> =
+                            vec.iter().filter(|&e| e != note).collect();
+
+                        vec_to_choose_from
+                            .choose(&mut rand::rng())
+                            .copied()
+                            .copied()
+                    } else {
+                        vec.choose(&mut rand::rng()).copied()
+                    }
+                } else {
+                    vec.choose(&mut rand::rng()).copied()
+                }
+            }
             Play::ClosureNote(function) => function(notes),
         }
     }
