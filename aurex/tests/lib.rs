@@ -6,7 +6,7 @@ use wmidi::{Channel, MidiMessage, Note, U7};
 #[test]
 fn wmidi_example() {
     let midi_msg =
-        MidiMessage::NoteOn(wmidi::Channel::Ch11, wmidi::Note::C4, U7::from_u8_lossy(50));
+        MidiMessage::NoteOn(wmidi::Channel::Ch10, wmidi::Note::C4, U7::from_u8_lossy(50));
 
     println!("{:?}", midi_msg);
     let mut bytes = vec![0u8; midi_msg.bytes_size()];

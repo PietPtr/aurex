@@ -1,4 +1,9 @@
-use std::{collections::VecDeque, fmt, rc::Rc, sync::Arc, thread, time::Duration};
+use std::{
+    collections::VecDeque,
+    fmt,
+    rc::Rc,
+    time::{Duration, Instant},
+};
 
 use midir::MidiOutputConnection;
 use rand::seq::IndexedRandom;
@@ -54,12 +59,7 @@ impl Sequence {
             .back()
             .map_or(Duration::from_millis(0), |n| n.time);
 
-        let note = SequencedNote {
-            time: last_note_time,
-            note: note.note,
-            duration: note.duration,
-            channel: note.channel,
-        };
+        let note = note.with_time(last_note_time);
 
         self.end_time = last_note_time + note.duration.time(self.bpm);
 
@@ -98,17 +98,57 @@ impl Sequence {
 
         self.end_time = self.end_time.max(time + note.duration.time(self.bpm));
 
-        let note = SequencedNote {
-            time,
-            note: note.note,
-            duration: note.duration,
-            channel: note.channel,
-        };
+        let note = note.with_time(time);
         self.notes.push_back(note);
 
         self.end_time
     }
 
+    /// Adds the given sequence to the current one, such that they play simultaneously.
+    pub fn combine_simultaneous(mut self, mut other: Sequence) -> Self {
+        while let Some(note) = other.notes.pop_front() {
+            self.notes.push_back(note);
+        }
+
+        self.end_time = self.end_time.max(other.end_time);
+
+        self
+    }
+
+    /// Adds the given sequence after the current one.
+    pub fn combine_at_end(mut self, mut other: Sequence) -> Self {
+        while let Some(mut note) = other.notes.pop_front() {
+            note.time += self.end_time;
+            self.notes.push_back(note);
+        }
+
+        self.end_time += other.end_time;
+
+        self
+    }
+
+    /// Takes the current notes in the sequence and loops them a given amount of times.
+    /// The end time is updated to reflect the looping.
+    pub fn r#loop(mut self, loops: u32) -> Self {
+        dbg!(self.end_time);
+        let mut notes = VecDeque::with_capacity(self.notes.len() * loops as usize);
+
+        for iteration in 0..loops {
+            for note in self.notes.iter() {
+                let mut note = note.clone();
+                note.time += self.end_time * iteration;
+                notes.push_back(note);
+            }
+        }
+
+        self.notes = notes;
+
+        self.end_time = self.end_time * loops;
+
+        self
+    }
+
+    /// Final function to call to play the constructed sequence over the given midi connection
     pub fn play(&mut self, conn: &mut MidiOutputConnection) {
         println!("Playing sequence with {} notes.", self.notes.len());
 
@@ -139,18 +179,14 @@ impl Sequence {
 
         actions.sort_by(|a, b| a.time.cmp(&b.time));
 
-        let mut time = Duration::from_millis(0);
+        let start_time = Instant::now();
         for action in actions {
-            let sleep_time = action.time - time;
-            thread::sleep(sleep_time);
-            println!("{:?}", action);
+            // Busy wait until it's time for the next action
+            while start_time.elapsed() < action.time {}
+
             conn.send(&action.message.to_vec()).unwrap();
-            time = action.time;
         }
     }
-
-    /// Adds the given sequence to the current one, such that they play simultaneously.
-    pub fn combine(&mut self, other: Sequence) {}
 }
 
 #[derive(Debug)]
@@ -159,13 +195,39 @@ pub struct SequenceAction<'a> {
     message: MidiMessage<'a>,
 }
 
+pub struct ChannelNote {
+    pub note: Play,
+    pub channel: wmidi::Channel,
+}
+
+impl ChannelNote {
+    pub fn with_duration(self, duration: NoteDuration) -> NoteWithDuration {
+        NoteWithDuration {
+            note: self.note,
+            duration,
+            channel: self.channel,
+        }
+    }
+}
+
 pub struct NoteWithDuration {
     pub note: Play,
     pub duration: NoteDuration,
     pub channel: wmidi::Channel,
 }
 
-#[derive(Debug)]
+impl NoteWithDuration {
+    pub fn with_time(self, time: Duration) -> SequencedNote {
+        SequencedNote {
+            time,
+            note: self.note,
+            duration: self.duration,
+            channel: self.channel,
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
 pub struct SequencedNote {
     pub time: Duration,
     pub note: Play,
@@ -200,7 +262,7 @@ impl Play {
     }
 
     /// Build a chord from a given root and the given intervals. Only works for Play::Note
-    pub fn chord(&self, intervals: &Vec<Interval>) -> Vec<Play> {
+    pub fn chord(&self, _intervals: &Vec<Interval>) -> Vec<Play> {
         // check if this is Note
         // if so, get the note's number
         // for each interval, the next note is the previous one + that interval

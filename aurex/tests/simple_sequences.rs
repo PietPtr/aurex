@@ -1,4 +1,4 @@
-use std::{os::unix::raw::gid_t, rc::Rc};
+use std::rc::Rc;
 
 use aurex::sequence::{NoteDuration, NoteWithDuration, Play, Sequence};
 use wmidi::{Channel, Note};
