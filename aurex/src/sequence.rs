@@ -75,7 +75,7 @@ impl Sequence {
             let sequenced_note = SequencedNote {
                 time: self.end_time,
                 note: note.clone(),
-                duration,
+                duration: duration.clone(),
                 channel,
             };
 
@@ -167,7 +167,7 @@ impl Sequence {
                 });
 
                 actions.push(SequenceAction {
-                    time: sequenced_note.time + sequenced_note.duration.time(self.bpm),
+                    time: sequenced_note.time + sequenced_note.duration.play_time(self.bpm),
                     message: note_off,
                 });
             }
@@ -403,18 +403,19 @@ impl fmt::Debug for Play {
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub enum Rhythm {
     Whole,
     DottedHalf,
     Half,
     DottedQuarter,
     Quarter,
-    Eigth,
+    Eighth,
     DottedEighth,
     QuarterTriplet,
     Sixteenth,
     Beats(f64),
+    Staccato(Box<Rhythm>),
 }
 
 impl Rhythm {
@@ -427,11 +428,21 @@ impl Rhythm {
             Rhythm::DottedQuarter => (1.5 * ns_per_beat as f64) as u64,
             Rhythm::Quarter => 1 * ns_per_beat,
             Rhythm::DottedEighth => (0.75 * ns_per_beat as f64) as u64,
-            Rhythm::Eigth => ns_per_beat / 2,
+            Rhythm::Eighth => ns_per_beat / 2,
             Rhythm::QuarterTriplet => ns_per_beat / 3,
             Rhythm::Sixteenth => ns_per_beat / 4,
             Rhythm::Beats(beats) => (ns_per_beat as f64 * beats) as u64,
+            Rhythm::Staccato(rhythm) => rhythm.time(bpm).as_nanos() as u64,
         })
+    }
+
+    pub fn play_time(&self, bpm: u64) -> Duration {
+        match self {
+            Rhythm::Staccato(rhythm) => {
+                Duration::from_nanos(((rhythm.time(bpm).as_nanos() as f64) * 0.8) as u64)
+            }
+            _ => self.time(bpm),
+        }
     }
 
     pub fn beats(&self) -> f64 {
@@ -442,10 +453,11 @@ impl Rhythm {
             Rhythm::DottedQuarter => 1.5,
             Rhythm::Quarter => 1.0,
             Rhythm::DottedEighth => 0.75,
-            Rhythm::Eigth => 0.5,
+            Rhythm::Eighth => 0.5,
             Rhythm::QuarterTriplet => 1. / 3.,
             Rhythm::Sixteenth => 0.25,
             Rhythm::Beats(beats) => *beats,
+            Rhythm::Staccato(rhythm) => rhythm.beats(),
         }
     }
 }

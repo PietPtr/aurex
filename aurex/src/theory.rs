@@ -167,7 +167,41 @@ pub mod scales {
 
     pub const MAJOR: &[I; 7] = IONIAN;
 
+    pub const TWO_OCTAVE_MAJOR: &[I; 14] = &[
+        I::Unison,
+        I::MajorSecond,
+        I::MajorThird,
+        I::PerfectFourth,
+        I::PerfectFifth,
+        I::MajorSixth,
+        I::MajorSeventh,
+        I::Octave,
+        I::OctaveAndMajorSecond,
+        I::OctaveAndMajorThird,
+        I::OctaveAndPerfectFourth,
+        I::OctaveAndPerfectFifth,
+        I::OctaveAndMajorSixth,
+        I::OctaveAndMajorSeventh,
+    ];
+
     pub const MINOR: &[I; 7] = AEOLIAN;
+
+    pub const TWO_OCTAVE_MINOR: &[I; 14] = &[
+        I::Unison,
+        I::MajorSecond,
+        I::MinorThird,
+        I::PerfectFourth,
+        I::PerfectFifth,
+        I::MinorSixth,
+        I::MinorSeventh,
+        I::Octave,
+        I::OctaveAndMajorSecond,
+        I::OctaveAndMinorThird,
+        I::OctaveAndPerfectFourth,
+        I::OctaveAndPerfectFifth,
+        I::OctaveAndMinorSixth,
+        I::OctaveAndMinorSeventh,
+    ];
 
     pub const MAJOR_PENTATONIC: &[I; 5] = &[
         I::Unison,

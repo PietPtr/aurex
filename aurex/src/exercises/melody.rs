@@ -60,9 +60,9 @@ impl<const S: usize, const R: usize> Exercise for MelodyExercise<S, R> {
                     let note = scale[note_index];
 
                     let note = if rand::rng().random::<f64>() < self.rest_probability {
-                        Play::Rest.with_duration(rhythm)
+                        Play::Rest.with_duration(rhythm.clone())
                     } else {
-                        Play::Note(note).with_duration(rhythm)
+                        Play::Note(note).with_duration(rhythm.clone())
                     };
 
                     sequence.add_to_end(note);
@@ -81,7 +81,7 @@ impl<const S: usize, const R: usize> Exercise for MelodyExercise<S, R> {
                 note_index = 0;
             }
 
-            sequence.add_to_end(Play::Rest.with_duration(Rhythm::Beats(4. - beats)));
+            sequence.add_to_end(Play::Rest.with_duration(Rhythm::Beats(8. - beats)));
         }
 
         sequence.add_to_end(Play::Note(self.root).with_duration(Rhythm::Half));
@@ -89,7 +89,7 @@ impl<const S: usize, const R: usize> Exercise for MelodyExercise<S, R> {
         let mut conn = midi::open_midi_connection("128:0");
 
         let count_off = drums::count_off(self.bpm);
-        let metronome = drums::metronome_emphasis(self.bpm).r#loop(self.loops);
+        let metronome = drums::metronome_emphasis(self.bpm).r#loop(self.loops * 2);
         let sequence = sequence.combine_simultaneous(metronome);
 
         (count_off.combine_at_end(sequence)).play(&mut conn);

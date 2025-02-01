@@ -25,7 +25,11 @@ impl Exercise for KnownRootExercise {
         sequence.add_to_end(Play::Note(self.root).with_duration(Rhythm::Quarter));
         sequence.add_to_end(Play::RandomNote(scale).with_duration(Rhythm::Quarter));
         sequence.add_to_end(Play::Rest.with_duration(Rhythm::Half));
-        let sequence = sequence.r#loop(self.loops).combine_simultaneous(metronome);
+        sequence.add_to_end(Play::Rest.with_duration(Rhythm::Whole));
+
+        let sequence = sequence
+            .r#loop(self.loops * 2)
+            .combine_simultaneous(metronome);
 
         (count_off.combine_at_end(sequence)).play(&mut conn);
     }

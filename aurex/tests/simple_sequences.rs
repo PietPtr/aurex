@@ -1,7 +1,7 @@
 use std::rc::Rc;
 
 use aurex::{
-    sequence::{Rhythm, NoteWithDuration, Play, Sequence},
+    sequence::{NoteWithDuration, Play, Rhythm, Sequence},
     theory::chords,
 };
 use wmidi::{Channel, Note};
@@ -37,11 +37,11 @@ fn first_sequence() {
     );
     sequence.add_to_end(NoteWithDuration {
         note: Play::RandomNote(vec![Note::C4, Note::C5]),
-        duration: Rhythm::Eigth,
+        duration: Rhythm::Eighth,
         channel: Channel::Ch1,
     });
     sequence.add_beat_offset(
-        Rhythm::Eigth.beats(),
+        Rhythm::Eighth.beats(),
         NoteWithDuration {
             note: Play::ClosureNote(Rc::new(|notes| notes.last().copied())),
             duration: Rhythm::Half,
@@ -89,13 +89,13 @@ fn add_chords() {
     let f_major = Play::f(4).chord(chords::MAJOR);
 
     sequence.add_chord(&c_major, Rhythm::Half, Channel::Ch1);
-    sequence.add_chord(&c_major, Rhythm::Eigth, Channel::Ch1);
-    sequence.add_chord(&d_minor, Rhythm::Eigth, Channel::Ch1);
-    sequence.add_chord(&e_minor, Rhythm::Eigth, Channel::Ch1);
+    sequence.add_chord(&c_major, Rhythm::Eighth, Channel::Ch1);
+    sequence.add_chord(&d_minor, Rhythm::Eighth, Channel::Ch1);
+    sequence.add_chord(&e_minor, Rhythm::Eighth, Channel::Ch1);
     sequence.add_chord(&f_major, Rhythm::Half, Channel::Ch1);
-    sequence.add_chord(&f_major, Rhythm::Eigth, Channel::Ch1);
-    sequence.add_chord(&e_minor, Rhythm::Eigth, Channel::Ch1);
-    sequence.add_chord(&d_minor, Rhythm::Eigth, Channel::Ch1);
+    sequence.add_chord(&f_major, Rhythm::Eighth, Channel::Ch1);
+    sequence.add_chord(&e_minor, Rhythm::Eighth, Channel::Ch1);
+    sequence.add_chord(&d_minor, Rhythm::Eighth, Channel::Ch1);
     sequence.add_chord(&c_major, Rhythm::Whole, Channel::Ch1);
 
     sequence.play(&mut conn);

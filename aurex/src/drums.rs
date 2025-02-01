@@ -50,7 +50,7 @@ pub fn basic_backbeat(bpm: u64) -> Sequence {
     let mut snare = Sequence::new(bpm);
 
     for _ in 0..8 {
-        hats.add_to_end(CLOSED_HAT.with_duration(Rhythm::Eigth));
+        hats.add_to_end(CLOSED_HAT.with_duration(Rhythm::Eighth));
     }
 
     for _ in 0..2 {
