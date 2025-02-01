@@ -1,7 +1,7 @@
 use std::rc::Rc;
 
 use aurex::{
-    sequence::{NoteDuration, NoteWithDuration, Play, Sequence},
+    sequence::{Rhythm, NoteWithDuration, Play, Sequence},
     theory::chords,
 };
 use wmidi::{Channel, Note};
@@ -16,35 +16,35 @@ fn first_sequence() {
 
     sequence.add_to_end(NoteWithDuration {
         note: Play::c(4),
-        duration: NoteDuration::Half,
+        duration: Rhythm::Half,
         channel: Channel::Ch1,
     });
     sequence.add_beat_offset(
-        -NoteDuration::Quarter.beats(),
+        -Rhythm::Quarter.beats(),
         NoteWithDuration {
             note: Play::e(4),
-            duration: NoteDuration::Half,
+            duration: Rhythm::Half,
             channel: Channel::Ch1,
         },
     );
     sequence.add_beat_offset(
-        -NoteDuration::Quarter.beats(),
+        -Rhythm::Quarter.beats(),
         NoteWithDuration {
             note: Play::g(4),
-            duration: NoteDuration::Quarter,
+            duration: Rhythm::Quarter,
             channel: Channel::Ch1,
         },
     );
     sequence.add_to_end(NoteWithDuration {
         note: Play::RandomNote(vec![Note::C4, Note::C5]),
-        duration: NoteDuration::Eigth,
+        duration: Rhythm::Eigth,
         channel: Channel::Ch1,
     });
     sequence.add_beat_offset(
-        NoteDuration::Eigth.beats(),
+        Rhythm::Eigth.beats(),
         NoteWithDuration {
             note: Play::ClosureNote(Rc::new(|notes| notes.last().copied())),
-            duration: NoteDuration::Half,
+            duration: Rhythm::Half,
             channel: Channel::Ch1,
         },
     );
@@ -59,19 +59,19 @@ fn add_simultaneous() {
 
     sequence.add_simultaneous(NoteWithDuration {
         note: Play::c(4),
-        duration: NoteDuration::Half,
+        duration: Rhythm::Half,
         channel: Channel::Ch1,
     });
 
     sequence.add_simultaneous(NoteWithDuration {
         note: Play::e(4),
-        duration: NoteDuration::Half,
+        duration: Rhythm::Half,
         channel: Channel::Ch1,
     });
 
     sequence.add_simultaneous(NoteWithDuration {
         note: Play::g(4),
-        duration: NoteDuration::Half,
+        duration: Rhythm::Half,
         channel: Channel::Ch1,
     });
 
@@ -88,15 +88,15 @@ fn add_chords() {
     let e_minor = Play::e(4).chord(chords::MINOR);
     let f_major = Play::f(4).chord(chords::MAJOR);
 
-    sequence.add_chord(&c_major, NoteDuration::Half, Channel::Ch1);
-    sequence.add_chord(&c_major, NoteDuration::Eigth, Channel::Ch1);
-    sequence.add_chord(&d_minor, NoteDuration::Eigth, Channel::Ch1);
-    sequence.add_chord(&e_minor, NoteDuration::Eigth, Channel::Ch1);
-    sequence.add_chord(&f_major, NoteDuration::Half, Channel::Ch1);
-    sequence.add_chord(&f_major, NoteDuration::Eigth, Channel::Ch1);
-    sequence.add_chord(&e_minor, NoteDuration::Eigth, Channel::Ch1);
-    sequence.add_chord(&d_minor, NoteDuration::Eigth, Channel::Ch1);
-    sequence.add_chord(&c_major, NoteDuration::Whole, Channel::Ch1);
+    sequence.add_chord(&c_major, Rhythm::Half, Channel::Ch1);
+    sequence.add_chord(&c_major, Rhythm::Eigth, Channel::Ch1);
+    sequence.add_chord(&d_minor, Rhythm::Eigth, Channel::Ch1);
+    sequence.add_chord(&e_minor, Rhythm::Eigth, Channel::Ch1);
+    sequence.add_chord(&f_major, Rhythm::Half, Channel::Ch1);
+    sequence.add_chord(&f_major, Rhythm::Eigth, Channel::Ch1);
+    sequence.add_chord(&e_minor, Rhythm::Eigth, Channel::Ch1);
+    sequence.add_chord(&d_minor, Rhythm::Eigth, Channel::Ch1);
+    sequence.add_chord(&c_major, Rhythm::Whole, Channel::Ch1);
 
     sequence.play(&mut conn);
 }

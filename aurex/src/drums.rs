@@ -1,4 +1,4 @@
-use crate::sequence::{ChannelNote, NoteDuration, Play, Sequence};
+use crate::sequence::{ChannelNote, Rhythm, Play, Sequence};
 
 pub const SNARE: ChannelNote = ChannelNote {
     note: Play::Note(wmidi::Note::E2),
@@ -34,11 +34,11 @@ pub fn count_off(bpm: u64) -> Sequence {
     let mut sequence = Sequence::new(bpm);
 
     for _ in 0..2 {
-        sequence.add_to_end(STICKS.with_duration(NoteDuration::Half));
+        sequence.add_to_end(STICKS.with_duration(Rhythm::Half));
     }
 
     for _ in 0..4 {
-        sequence.add_to_end(STICKS.with_duration(NoteDuration::Quarter));
+        sequence.add_to_end(STICKS.with_duration(Rhythm::Quarter));
     }
 
     sequence
@@ -50,18 +50,18 @@ pub fn basic_backbeat(bpm: u64) -> Sequence {
     let mut snare = Sequence::new(bpm);
 
     for _ in 0..8 {
-        hats.add_to_end(CLOSED_HAT.with_duration(NoteDuration::Eigth));
+        hats.add_to_end(CLOSED_HAT.with_duration(Rhythm::Eigth));
     }
 
     for _ in 0..2 {
-        kick.add_to_end(KICK.with_duration(NoteDuration::Half));
+        kick.add_to_end(KICK.with_duration(Rhythm::Half));
     }
 
     snare.add_beat_offset(
-        NoteDuration::Quarter.beats(),
-        SNARE.with_duration(NoteDuration::Half),
+        Rhythm::Quarter.beats(),
+        SNARE.with_duration(Rhythm::Half),
     );
-    snare.add_to_end(SNARE.with_duration(NoteDuration::Quarter));
+    snare.add_to_end(SNARE.with_duration(Rhythm::Quarter));
 
     hats.combine_simultaneous(kick).combine_simultaneous(snare)
 }
@@ -69,10 +69,10 @@ pub fn basic_backbeat(bpm: u64) -> Sequence {
 pub fn metronome_emphasis(bpm: u64) -> Sequence {
     let mut sequence = Sequence::new(bpm);
 
-    sequence.add_to_end(METRONOME_EMPH.with_duration(NoteDuration::Quarter));
+    sequence.add_to_end(METRONOME_EMPH.with_duration(Rhythm::Quarter));
 
     for _ in 0..3 {
-        sequence.add_to_end(METRONOME_TICK.with_duration(NoteDuration::Quarter));
+        sequence.add_to_end(METRONOME_TICK.with_duration(Rhythm::Quarter));
     }
 
     sequence

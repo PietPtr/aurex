@@ -68,7 +68,7 @@ impl Sequence {
     pub fn add_chord(
         &mut self,
         notes: &Vec<Play>,
-        duration: NoteDuration,
+        duration: Rhythm,
         channel: wmidi::Channel,
     ) -> Duration {
         for note in notes {
@@ -197,7 +197,7 @@ pub struct ChannelNote {
 }
 
 impl ChannelNote {
-    pub fn with_duration(self, duration: NoteDuration) -> NoteWithDuration {
+    pub fn with_duration(self, duration: Rhythm) -> NoteWithDuration {
         NoteWithDuration {
             note: self.note,
             duration,
@@ -208,7 +208,7 @@ impl ChannelNote {
 
 pub struct NoteWithDuration {
     pub note: Play,
-    pub duration: NoteDuration,
+    pub duration: Rhythm,
     pub channel: wmidi::Channel,
 }
 
@@ -227,7 +227,7 @@ impl NoteWithDuration {
 pub struct SequencedNote {
     pub time: Duration,
     pub note: Play,
-    pub duration: NoteDuration,
+    pub duration: Rhythm,
     pub channel: wmidi::Channel,
 }
 
@@ -315,7 +315,7 @@ impl Play {
     }
 
     /// Add a duration to the note. Defaults the channel to Channel 1
-    pub fn with_duration(self, duration: NoteDuration) -> NoteWithDuration {
+    pub fn with_duration(self, duration: Rhythm) -> NoteWithDuration {
         NoteWithDuration {
             note: self,
             duration,
@@ -404,36 +404,48 @@ impl fmt::Debug for Play {
 }
 
 #[derive(Debug, Clone, Copy)]
-pub enum NoteDuration {
+pub enum Rhythm {
     Whole,
+    DottedHalf,
     Half,
+    DottedQuarter,
     Quarter,
     Eigth,
+    DottedEighth,
     QuarterTriplet,
     Sixteenth,
+    Beats(f64),
 }
 
-impl NoteDuration {
+impl Rhythm {
     pub fn time(&self, bpm: u64) -> Duration {
         let ns_per_beat = 60_000_000_000 / bpm;
         Duration::from_nanos(match self {
-            NoteDuration::Whole => 4 * ns_per_beat,
-            NoteDuration::Half => 2 * ns_per_beat,
-            NoteDuration::Quarter => 1 * ns_per_beat,
-            NoteDuration::Eigth => ns_per_beat / 2,
-            NoteDuration::QuarterTriplet => ns_per_beat / 3,
-            NoteDuration::Sixteenth => ns_per_beat / 4,
+            Rhythm::Whole => 4 * ns_per_beat,
+            Rhythm::DottedHalf => 3 * ns_per_beat,
+            Rhythm::Half => 2 * ns_per_beat,
+            Rhythm::DottedQuarter => (1.5 * ns_per_beat as f64) as u64,
+            Rhythm::Quarter => 1 * ns_per_beat,
+            Rhythm::DottedEighth => (0.75 * ns_per_beat as f64) as u64,
+            Rhythm::Eigth => ns_per_beat / 2,
+            Rhythm::QuarterTriplet => ns_per_beat / 3,
+            Rhythm::Sixteenth => ns_per_beat / 4,
+            Rhythm::Beats(beats) => (ns_per_beat as f64 * beats) as u64,
         })
     }
 
     pub fn beats(&self) -> f64 {
         match self {
-            NoteDuration::Whole => 4.0,
-            NoteDuration::Half => 2.0,
-            NoteDuration::Quarter => 1.0,
-            NoteDuration::Eigth => 0.5,
-            NoteDuration::QuarterTriplet => 1. / 3.,
-            NoteDuration::Sixteenth => 0.25,
+            Rhythm::Whole => 4.0,
+            Rhythm::DottedHalf => 3.,
+            Rhythm::Half => 2.0,
+            Rhythm::DottedQuarter => 1.5,
+            Rhythm::Quarter => 1.0,
+            Rhythm::DottedEighth => 0.75,
+            Rhythm::Eigth => 0.5,
+            Rhythm::QuarterTriplet => 1. / 3.,
+            Rhythm::Sixteenth => 0.25,
+            Rhythm::Beats(beats) => *beats,
         }
     }
 }

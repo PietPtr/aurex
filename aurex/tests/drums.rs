@@ -11,7 +11,7 @@ fn test_drum_channel() {
     for _ in 0..10 {
         sequence.add_to_end(NoteWithDuration {
             note: Play::b(1),
-            duration: aurex::sequence::NoteDuration::Quarter,
+            duration: aurex::sequence::Rhythm::Quarter,
             channel: wmidi::Channel::Ch10,
         });
     }

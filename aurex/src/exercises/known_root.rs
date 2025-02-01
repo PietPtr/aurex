@@ -1,6 +1,6 @@
 use crate::{
     drums, midi,
-    sequence::{NoteDuration, Play, Sequence},
+    sequence::{Play, Rhythm, Sequence},
     theory::{scales, Interval},
 };
 
@@ -22,9 +22,9 @@ impl Exercise for KnownRootExercise {
         let scale = scales::scale(self.root, scales::MAJOR_PENTATONIC);
 
         let mut sequence = Sequence::new(self.bpm);
-        sequence.add_to_end(Play::Note(self.root).with_duration(NoteDuration::Quarter));
-        sequence.add_to_end(Play::RandomNote(scale).with_duration(NoteDuration::Quarter));
-        sequence.add_to_end(Play::Rest.with_duration(NoteDuration::Half));
+        sequence.add_to_end(Play::Note(self.root).with_duration(Rhythm::Quarter));
+        sequence.add_to_end(Play::RandomNote(scale).with_duration(Rhythm::Quarter));
+        sequence.add_to_end(Play::Rest.with_duration(Rhythm::Half));
         let sequence = sequence.r#loop(self.loops).combine_simultaneous(metronome);
 
         (count_off.combine_at_end(sequence)).play(&mut conn);
