@@ -67,7 +67,7 @@ impl Sequence {
 
     pub fn add_chord(
         &mut self,
-        notes: &Vec<Play>,
+        notes: &[Play],
         duration: Rhythm,
         channel: wmidi::Channel,
     ) -> Duration {

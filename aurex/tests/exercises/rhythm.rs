@@ -46,6 +46,6 @@ fn sixteenths() {
         rest_probability: 0.2,
         ..MelodyExercise::default()
     };
-
+    // TODO: change instrument to Bass here
     exercise.play();
 }

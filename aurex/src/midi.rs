@@ -20,3 +20,16 @@ pub fn open_midi_connection(id: &str) -> midir::MidiOutputConnection {
 
     panic!("Did not find MIDI device {id}.");
 }
+
+pub const GRAND_PIANO: wmidi::U7 = wmidi::U7::from_u8_lossy(0);
+pub const FINGERED_BASS: wmidi::U7 = wmidi::U7::from_u8_lossy(33);
+pub const PICKED_BASS: wmidi::U7 = wmidi::U7::from_u8_lossy(34);
+
+pub fn set_instrument(
+    conn: &mut midir::MidiOutputConnection,
+    channel: wmidi::Channel,
+    instrument: wmidi::U7,
+) {
+    let message = wmidi::MidiMessage::ProgramChange(channel, instrument);
+    conn.send(&message.to_vec()).unwrap();
+}

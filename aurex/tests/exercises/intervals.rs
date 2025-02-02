@@ -9,14 +9,60 @@ use aurex::{
 use wmidi::Note;
 
 #[test]
-fn fourth_and_fifths() {
-    let root = Note::C2;
-
+fn seconds() {
     let exercise = KnownRootExercise {
         bpm: 78,
         loops: 10,
-        root,
+        root: Note::C2,
+        scale: vec![Interval::MinorSecond, Interval::MajorSecond],
+    };
+
+    exercise.play();
+}
+
+#[test]
+fn thirds() {
+    let exercise = KnownRootExercise {
+        bpm: 78,
+        loops: 10,
+        root: Note::C2,
+        scale: vec![Interval::MinorThird, Interval::MajorThird],
+    };
+
+    exercise.play();
+}
+
+#[test]
+fn fourth_and_fifths() {
+    let exercise = KnownRootExercise {
+        bpm: 78,
+        loops: 10,
+        root: Note::C2,
         scale: vec![Interval::PerfectFifth, Interval::PerfectFourth],
+    };
+
+    exercise.play();
+}
+
+#[test]
+fn sixths() {
+    let exercise = KnownRootExercise {
+        bpm: 78,
+        loops: 10,
+        root: Note::C2,
+        scale: vec![Interval::MinorSixth, Interval::MajorSixth],
+    };
+
+    exercise.play();
+}
+
+#[test]
+fn sevenths() {
+    let exercise = KnownRootExercise {
+        bpm: 78,
+        loops: 10,
+        root: Note::C2,
+        scale: vec![Interval::MinorSeventh, Interval::MajorSeventh],
     };
 
     exercise.play();

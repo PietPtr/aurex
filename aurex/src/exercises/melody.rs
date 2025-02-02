@@ -86,12 +86,11 @@ impl<const S: usize, const R: usize> Exercise for MelodyExercise<S, R> {
 
         sequence.add_to_end(Play::Note(self.root).with_duration(Rhythm::Half));
 
-        let mut conn = midi::open_midi_connection("128:0");
-
         let count_off = drums::count_off(self.bpm);
         let metronome = drums::metronome_emphasis(self.bpm).r#loop(self.loops * 2);
         let sequence = sequence.combine_simultaneous(metronome);
 
+        let mut conn = midi::open_midi_connection("128:0");
         (count_off.combine_at_end(sequence)).play(&mut conn);
     }
 }

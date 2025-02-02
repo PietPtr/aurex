@@ -66,3 +66,52 @@ fn fast_no_leaps() {
 
     exercise.play();
 }
+
+#[test]
+fn short_ascending() {
+    let exercise = MelodyExercise {
+        bpm: 120,
+        loops: 10,
+        root: wmidi::Note::C4,
+        scale: scales::MAJOR.to_vec(),
+        steps: RandomThings {
+            things: [1, 2, 3, 4, 5, 6],
+            weights: [80, 70, 60, 50, 40, 30],
+        },
+        rhythms: RandomThings {
+            things: [vec![Rhythm::Quarter, Rhythm::Quarter, Rhythm::Quarter]],
+            weights: [1],
+        },
+        amount_of_beats: 3.,
+        ..MelodyExercise::default()
+    };
+
+    exercise.play();
+}
+
+#[test]
+fn four_beats() {
+    let exercise = MelodyExercise {
+        bpm: 120,
+        loops: 10,
+        root: wmidi::Note::C4,
+        scale: scales::MAJOR.to_vec(),
+        steps: RandomThings {
+            things: [1, 2, 3, 4, 5, 6],
+            weights: [80, 30, 20, 10, 10, 2],
+        },
+        rhythms: RandomThings {
+            things: [vec![
+                Rhythm::Quarter,
+                Rhythm::Quarter,
+                Rhythm::Quarter,
+                Rhythm::Quarter,
+            ]],
+            weights: [1],
+        },
+        amount_of_beats: 4.,
+        ..MelodyExercise::default()
+    };
+
+    exercise.play();
+}

@@ -58,6 +58,7 @@ impl Exercise for InScaleWithRangeExercise {
         let sequence = sequence
             .r#loop(self.loops * 2)
             .combine_simultaneous(metronome);
+
         (count_off.combine_at_end(sequence)).play(&mut conn);
     }
 }

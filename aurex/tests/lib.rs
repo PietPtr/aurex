@@ -1,7 +1,9 @@
 use std::io;
 
-use aurex::sequence::Play;
+use aurex::{midi, sequence::Play};
 use wmidi::{Channel, MidiMessage, Note, U7};
+
+mod exercises;
 
 #[test]
 fn wmidi_example() {
@@ -51,4 +53,10 @@ fn note_ids() {
 
     let play = Play::a(8);
     dbg!(play);
+}
+
+#[test]
+fn change_instrument() {
+    let mut conn = aurex::midi::open_midi_connection("128:0");
+    midi::set_instrument(&mut conn, Channel::Ch1, midi::FINGERED_BASS);
 }
