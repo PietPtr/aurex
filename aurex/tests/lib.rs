@@ -18,7 +18,7 @@ fn wmidi_example() {
     let mut conn = aurex::midi::open_midi_connection("128:0");
 
     for note in 0..128 {
-        println!("note={note}");
+        println!("note={note} {:?}", Note::from_u8_lossy(note));
 
         bytes[1] = note;
         conn.send(&bytes).unwrap();

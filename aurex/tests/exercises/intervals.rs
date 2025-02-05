@@ -38,7 +38,23 @@ fn fourth_and_fifths() {
         bpm: 78,
         loops: 10,
         root: Note::C2,
-        scale: vec![Interval::PerfectFifth, Interval::PerfectFourth],
+        scale: vec![Interval::PerfectFourth, Interval::PerfectFifth],
+    };
+
+    exercise.play();
+}
+
+#[test]
+fn major_fourth_and_fifths() {
+    let exercise = KnownRootExercise {
+        bpm: 78,
+        loops: 10,
+        root: Note::C2,
+        scale: vec![
+            Interval::MajorThird,
+            Interval::PerfectFourth,
+            Interval::PerfectFifth,
+        ],
     };
 
     exercise.play();

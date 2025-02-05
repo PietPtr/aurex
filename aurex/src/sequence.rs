@@ -405,6 +405,7 @@ impl fmt::Debug for Play {
 
 #[derive(Debug, Clone)]
 pub enum Rhythm {
+    DoubleWhole,
     Whole,
     DottedHalf,
     Half,
@@ -422,6 +423,7 @@ impl Rhythm {
     pub fn time(&self, bpm: u64) -> Duration {
         let ns_per_beat = 60_000_000_000 / bpm;
         Duration::from_nanos(match self {
+            Rhythm::DoubleWhole => 8 * ns_per_beat,
             Rhythm::Whole => 4 * ns_per_beat,
             Rhythm::DottedHalf => 3 * ns_per_beat,
             Rhythm::Half => 2 * ns_per_beat,
@@ -447,11 +449,12 @@ impl Rhythm {
 
     pub fn beats(&self) -> f64 {
         match self {
-            Rhythm::Whole => 4.0,
+            Rhythm::DoubleWhole => 8.,
+            Rhythm::Whole => 4.,
             Rhythm::DottedHalf => 3.,
-            Rhythm::Half => 2.0,
+            Rhythm::Half => 2.,
             Rhythm::DottedQuarter => 1.5,
-            Rhythm::Quarter => 1.0,
+            Rhythm::Quarter => 1.,
             Rhythm::DottedEighth => 0.75,
             Rhythm::Eighth => 0.5,
             Rhythm::QuarterTriplet => 1. / 3.,
@@ -460,4 +463,11 @@ impl Rhythm {
             Rhythm::Staccato(rhythm) => rhythm.beats(),
         }
     }
+}
+
+#[macro_export]
+macro_rules! staccato {
+    ($rhythm:expr) => {
+        Rhythm::Staccato(Box::new($rhythm))
+    };
 }

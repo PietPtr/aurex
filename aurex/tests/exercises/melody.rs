@@ -2,34 +2,37 @@ use aurex::{
     exercises::{melody::MelodyExercise, Exercise},
     random::RandomThings,
     sequence::Rhythm,
+    staccato,
     theory::scales,
 };
 
 #[test]
 fn melody() {
     let exercise = MelodyExercise {
-        bpm: 100,
+        bpm: 65,
         loops: 10,
-        root: wmidi::Note::C4,
-        scale: scales::MAJOR.to_vec(),
+        root: wmidi::Note::G1,
+        scale: scales::MAJOR_PENTATONIC.to_vec(),
         steps: RandomThings {
-            things: [-2, -1, 0, 1, 2],
-            weights: [5, 10, 10, 40, 15],
+            things: [-2, -1, 0, 1, 2, 3],
+            weights: [3, 10, 10, 40, 15, 5],
         },
         rhythms: RandomThings {
             things: [
                 vec![Rhythm::Quarter],
                 vec![Rhythm::Eighth],
+                vec![Rhythm::Eighth, Rhythm::Eighth],
+                vec![Rhythm::DottedQuarter],
                 vec![
                     Rhythm::QuarterTriplet,
                     Rhythm::QuarterTriplet,
                     Rhythm::QuarterTriplet,
                 ],
             ],
-            weights: [50, 45, 5],
+            weights: [50, 50, 35, 5, 10],
         },
-        rest_probability: 0.1,
-        amount_of_beats: 3.,
+        rest_probability: 0.0,
+        amount_of_beats: 2.5,
         ..MelodyExercise::default()
     };
 
@@ -39,25 +42,25 @@ fn melody() {
 #[test]
 fn fast_no_leaps() {
     let exercise = MelodyExercise {
-        bpm: 120,
+        bpm: 100,
         loops: 10,
-        root: wmidi::Note::C4,
+        root: wmidi::Note::F1,
         scale: scales::TWO_OCTAVE_MAJOR.to_vec(),
         steps: RandomThings {
             things: [0, 1],
-            weights: [40, 60],
+            weights: [40, 70],
         },
         rhythms: RandomThings {
             things: [
-                vec![Rhythm::Eighth, Rhythm::Eighth],
-                vec![Rhythm::Quarter],
+                vec![staccato!(Rhythm::Eighth), staccato!(Rhythm::Eighth)],
+                vec![staccato!(Rhythm::Quarter)],
                 vec![
-                    Rhythm::QuarterTriplet,
-                    Rhythm::QuarterTriplet,
-                    Rhythm::QuarterTriplet,
+                    staccato!(Rhythm::QuarterTriplet),
+                    staccato!(Rhythm::QuarterTriplet),
+                    staccato!(Rhythm::QuarterTriplet),
                 ],
             ],
-            weights: [50, 5, 20],
+            weights: [50, 5, 5],
         },
         amount_of_beats: 3.,
         rest_probability: 0.0,
@@ -67,12 +70,15 @@ fn fast_no_leaps() {
     exercise.play();
 }
 
+// TODO: most of these exercises don't include the octave
+// TODO: these exercises don't set the instrument at the start
+
 #[test]
 fn short_ascending() {
     let exercise = MelodyExercise {
         bpm: 120,
         loops: 10,
-        root: wmidi::Note::C4,
+        root: wmidi::Note::F1,
         scale: scales::MAJOR.to_vec(),
         steps: RandomThings {
             things: [1, 2, 3, 4, 5, 6],
@@ -89,12 +95,14 @@ fn short_ascending() {
     exercise.play();
 }
 
+// TODO: four beat walking bass practice given a chord loop?
+
 #[test]
 fn four_beats() {
     let exercise = MelodyExercise {
-        bpm: 120,
+        bpm: 70,
         loops: 10,
-        root: wmidi::Note::C4,
+        root: wmidi::Note::C2,
         scale: scales::MAJOR.to_vec(),
         steps: RandomThings {
             things: [1, 2, 3, 4, 5, 6],

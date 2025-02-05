@@ -1,5 +1,3 @@
-use rand::seq::IndexedRandom;
-
 use crate::{
     drums, midi,
     sequence::{Play, Rhythm, Sequence},
@@ -31,10 +29,9 @@ impl Exercise for DiatonicChordExercise {
 
             sequence.add_chord(
                 &[Play::Note(root), Play::Note(third), Play::Note(fifth)],
-                Rhythm::Whole,
+                Rhythm::DoubleWhole,
                 wmidi::Channel::Ch1,
             );
-            sequence.add_to_end(Play::Rest.with_duration(Rhythm::Whole));
         }
 
         let count_off = drums::count_off(self.bpm);

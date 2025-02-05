@@ -49,8 +49,8 @@ impl<const S: usize, const R: usize> Exercise for MelodyExercise<S, R> {
     fn play(self) {
         let mut sequence = Sequence::new(self.bpm);
         let scale = scales::scale(self.root, &self.scale);
-        let mut note_index = 0; // always start on root
         for _ in 0..self.loops {
+            let mut note_index = 0; // always start on root
             let mut beats = 0.;
 
             while beats < self.amount_of_beats {

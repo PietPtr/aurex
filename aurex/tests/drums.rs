@@ -1,6 +1,6 @@
 use aurex::{
     drums::{basic_backbeat, count_off},
-    sequence::{NoteWithDuration, Play, Sequence},
+    sequence::{Rhythm, Sequence},
 };
 
 #[test]
@@ -9,11 +9,7 @@ fn test_drum_channel() {
     let mut sequence = Sequence::new(78);
 
     for _ in 0..10 {
-        sequence.add_to_end(NoteWithDuration {
-            note: Play::b(1),
-            duration: aurex::sequence::Rhythm::Quarter,
-            channel: wmidi::Channel::Ch10,
-        });
+        sequence.add_to_end(aurex::drums::METRONOME_EMPH.with_duration(Rhythm::Quarter));
     }
 
     sequence.play(&mut conn);
@@ -28,3 +24,5 @@ fn test_count_off_and_backbeat() {
 
     count_off.play(&mut conn);
 }
+
+// TODO: define a few warming ups, e.g. scales / arpeggios

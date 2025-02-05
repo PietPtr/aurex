@@ -1,7 +1,7 @@
-use crate::sequence::{ChannelNote, Rhythm, Play, Sequence};
+use crate::sequence::{ChannelNote, Play, Rhythm, Sequence};
 
 pub const SNARE: ChannelNote = ChannelNote {
-    note: Play::Note(wmidi::Note::E2),
+    note: Play::Note(wmidi::Note::D2),
     channel: wmidi::Channel::Ch10,
 };
 
@@ -21,12 +21,12 @@ pub const KICK: ChannelNote = ChannelNote {
 };
 
 pub const METRONOME_TICK: ChannelNote = ChannelNote {
-    note: Play::Note(wmidi::Note::B1), // TODO: which note?
+    note: Play::Note(wmidi::Note::F5),
     channel: wmidi::Channel::Ch10,
 };
 
 pub const METRONOME_EMPH: ChannelNote = ChannelNote {
-    note: Play::Note(wmidi::Note::B1), // TODO: which note?
+    note: Play::Note(wmidi::Note::E5),
     channel: wmidi::Channel::Ch10,
 };
 
@@ -57,10 +57,7 @@ pub fn basic_backbeat(bpm: u64) -> Sequence {
         kick.add_to_end(KICK.with_duration(Rhythm::Half));
     }
 
-    snare.add_beat_offset(
-        Rhythm::Quarter.beats(),
-        SNARE.with_duration(Rhythm::Half),
-    );
+    snare.add_beat_offset(Rhythm::Quarter.beats(), SNARE.with_duration(Rhythm::Half));
     snare.add_to_end(SNARE.with_duration(Rhythm::Quarter));
 
     hats.combine_simultaneous(kick).combine_simultaneous(snare)
