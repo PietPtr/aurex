@@ -11,11 +11,11 @@ fn melody() {
     let exercise = MelodyExercise {
         bpm: 65,
         loops: 10,
-        root: wmidi::Note::G1,
-        scale: scales::MAJOR_PENTATONIC.to_vec(),
+        root: wmidi::Note::B1,
+        scale: scales::HARMONIC_MINOR.to_vec(),
         steps: RandomThings {
             things: [-2, -1, 0, 1, 2, 3],
-            weights: [3, 10, 10, 40, 15, 5],
+            weights: [3, 10, 10, 40, 15, 0],
         },
         rhythms: RandomThings {
             things: [
@@ -29,7 +29,7 @@ fn melody() {
                     Rhythm::QuarterTriplet,
                 ],
             ],
-            weights: [50, 50, 35, 5, 10],
+            weights: [50, 50, 35, 5, 5],
         },
         rest_probability: 0.0,
         amount_of_beats: 2.5,

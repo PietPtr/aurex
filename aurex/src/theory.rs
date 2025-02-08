@@ -31,6 +31,10 @@ pub enum Interval {
     OctaveAndMinorSeventh,
     OctaveAndMajorSeventh,
     TwoOctaves,
+    /// A generic interval that consists of any amount of semitones
+    Interval {
+        semitones: u8,
+    },
 }
 
 impl Interval {
@@ -67,6 +71,7 @@ impl Interval {
             Interval::OctaveAndMinorSeventh => 12 + 10,
             Interval::OctaveAndMajorSeventh => 12 + 11,
             Interval::TwoOctaves => 12 + 12,
+            Interval::Interval { semitones } => semitones,
         }
     }
 
@@ -201,6 +206,17 @@ pub mod scales {
         I::OctaveAndPerfectFifth,
         I::OctaveAndMinorSixth,
         I::OctaveAndMinorSeventh,
+    ];
+
+    pub const HARMONIC_MINOR: &[I; 8] = &[
+        I::Unison,
+        I::MajorSecond,
+        I::MinorThird,
+        I::PerfectFourth,
+        I::PerfectFifth,
+        I::MinorSixth,
+        I::MajorSeventh,
+        I::Octave, // TODO: octave or not everywhere...?
     ];
 
     pub const MAJOR_PENTATONIC: &[I; 5] = &[

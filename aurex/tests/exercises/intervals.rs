@@ -8,7 +8,7 @@ use aurex::{
 };
 use wmidi::Note;
 
-const ROOT: Note = Note::D2;
+const ROOT: Note = Note::FSharp1;
 
 #[test]
 fn seconds() {
@@ -31,8 +31,27 @@ fn thirds() {
         loops: 10,
         root: ROOT,
         scale: vec![Interval::MinorThird, Interval::MajorThird],
-        direction: known_root::Direction::Descending,
-        root_position: known_root::RootPosition::EndOnRoot,
+        direction: known_root::Direction::Ascending,
+        root_position: known_root::RootPosition::StartOnRoot,
+    };
+
+    exercise.play();
+}
+
+#[test]
+fn thirds_but_theres_other_stuff() {
+    let exercise = KnownRootExercise {
+        bpm: 78,
+        loops: 10,
+        root: ROOT,
+        scale: vec![
+            Interval::MinorThird,
+            Interval::MajorThird,
+            Interval::PerfectFifth,
+            Interval::Octave,
+        ],
+        direction: known_root::Direction::Ascending,
+        root_position: known_root::RootPosition::StartOnRoot,
     };
 
     exercise.play();
@@ -101,8 +120,8 @@ fn sevenths() {
 #[test]
 fn major_pentatonic_known_root() {
     let exercise = KnownRootExercise {
-        bpm: 140,
-        loops: 100,
+        bpm: 100,
+        loops: 30,
         root: ROOT,
         scale: scales::MAJOR_PENTATONIC.to_vec(),
         direction: known_root::Direction::Ascending,
@@ -119,6 +138,34 @@ fn major_pentatonic() {
         loops: 10,
         root: ROOT,
         scale: scales::MAJOR_PENTATONIC.to_vec(),
+    };
+
+    exercise.play();
+}
+
+#[test]
+fn major() {
+    let exercise = KnownRootExercise {
+        bpm: 100,
+        loops: 10,
+        root: ROOT,
+        scale: scales::MAJOR.to_vec(),
+        direction: known_root::Direction::Ascending,
+        root_position: known_root::RootPosition::StartOnRoot,
+    };
+
+    exercise.play();
+}
+
+#[test]
+fn minor() {
+    let exercise = KnownRootExercise {
+        bpm: 90,
+        loops: 10,
+        root: ROOT,
+        scale: scales::TWO_OCTAVE_MINOR[0..8].to_vec(),
+        direction: known_root::Direction::Ascending,
+        root_position: known_root::RootPosition::EndOnRoot,
     };
 
     exercise.play();
