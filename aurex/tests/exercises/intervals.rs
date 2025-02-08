@@ -1,20 +1,24 @@
 use aurex::{
     exercises::{
         in_scale::{InScaleExercise, InScaleWithRangeExercise},
-        known_root::KnownRootExercise,
+        known_root::{self, KnownRootExercise},
         Exercise,
     },
     theory::{scales, Interval},
 };
 use wmidi::Note;
 
+const ROOT: Note = Note::D2;
+
 #[test]
 fn seconds() {
     let exercise = KnownRootExercise {
         bpm: 78,
         loops: 10,
-        root: Note::C2,
+        root: ROOT,
         scale: vec![Interval::MinorSecond, Interval::MajorSecond],
+        direction: known_root::Direction::Ascending,
+        root_position: known_root::RootPosition::StartOnRoot,
     };
 
     exercise.play();
@@ -25,8 +29,10 @@ fn thirds() {
     let exercise = KnownRootExercise {
         bpm: 78,
         loops: 10,
-        root: Note::C2,
+        root: ROOT,
         scale: vec![Interval::MinorThird, Interval::MajorThird],
+        direction: known_root::Direction::Descending,
+        root_position: known_root::RootPosition::EndOnRoot,
     };
 
     exercise.play();
@@ -37,8 +43,10 @@ fn fourth_and_fifths() {
     let exercise = KnownRootExercise {
         bpm: 78,
         loops: 10,
-        root: Note::C2,
+        root: ROOT,
         scale: vec![Interval::PerfectFourth, Interval::PerfectFifth],
+        direction: known_root::Direction::Ascending,
+        root_position: known_root::RootPosition::EndOnRoot,
     };
 
     exercise.play();
@@ -49,12 +57,14 @@ fn major_fourth_and_fifths() {
     let exercise = KnownRootExercise {
         bpm: 78,
         loops: 10,
-        root: Note::C2,
+        root: ROOT,
         scale: vec![
             Interval::MajorThird,
             Interval::PerfectFourth,
             Interval::PerfectFifth,
         ],
+        direction: known_root::Direction::Ascending,
+        root_position: known_root::RootPosition::EndOnRoot,
     };
 
     exercise.play();
@@ -65,8 +75,10 @@ fn sixths() {
     let exercise = KnownRootExercise {
         bpm: 78,
         loops: 10,
-        root: Note::C2,
+        root: ROOT,
         scale: vec![Interval::MinorSixth, Interval::MajorSixth],
+        direction: known_root::Direction::Ascending,
+        root_position: known_root::RootPosition::StartOnRoot,
     };
 
     exercise.play();
@@ -77,8 +89,10 @@ fn sevenths() {
     let exercise = KnownRootExercise {
         bpm: 78,
         loops: 10,
-        root: Note::C2,
+        root: ROOT,
         scale: vec![Interval::MinorSeventh, Interval::MajorSeventh],
+        direction: known_root::Direction::Ascending,
+        root_position: known_root::RootPosition::StartOnRoot,
     };
 
     exercise.play();
@@ -87,10 +101,12 @@ fn sevenths() {
 #[test]
 fn major_pentatonic_known_root() {
     let exercise = KnownRootExercise {
-        bpm: 100,
+        bpm: 140,
         loops: 100,
-        root: Note::C2,
+        root: ROOT,
         scale: scales::MAJOR_PENTATONIC.to_vec(),
+        direction: known_root::Direction::Ascending,
+        root_position: known_root::RootPosition::StartOnRoot,
     };
 
     exercise.play();
@@ -101,7 +117,7 @@ fn major_pentatonic() {
     let exercise = InScaleExercise {
         bpm: 100,
         loops: 10,
-        root: Note::C2,
+        root: ROOT,
         scale: scales::MAJOR_PENTATONIC.to_vec(),
     };
 
@@ -113,7 +129,7 @@ fn two_octave_major_pentatonic() {
     let exercise = InScaleWithRangeExercise {
         bpm: 100,
         loops: 10,
-        root: Note::C2,
+        root: ROOT,
         scale: scales::MAJOR_PENTATONIC.to_vec(),
         range_start: Note::C2,
         range_end: Note::C4,
@@ -127,7 +143,7 @@ fn part_of_major() {
     let exercise = InScaleWithRangeExercise {
         bpm: 100,
         loops: 10,
-        root: Note::C2,
+        root: ROOT,
         scale: scales::MAJOR.to_vec(),
         range_start: Note::D2,
         range_end: Note::FSharp2,

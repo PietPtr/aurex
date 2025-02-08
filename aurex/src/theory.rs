@@ -246,6 +246,18 @@ pub mod scales {
         notes
     }
 
+    pub fn descending_scale(root: wmidi::Note, intervals: &[I]) -> Vec<wmidi::Note> {
+        let mut notes = vec![];
+
+        for interval in intervals {
+            notes.push(wmidi::Note::from_u8_lossy(
+                root as u8 - interval.semitones(),
+            ));
+        }
+
+        notes
+    }
+
     pub fn scale_range(
         root: wmidi::Note,
         intervals: &[I],

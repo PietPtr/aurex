@@ -2,9 +2,10 @@ use std::{
     collections::VecDeque,
     fmt,
     rc::Rc,
-    time::{Duration, Instant},
+    time::{Duration, Instant, SystemTime},
 };
 
+use chrono::Timelike;
 use midir::MidiOutputConnection;
 use rand::seq::IndexedRandom;
 use wmidi::{MidiMessage, U7};
@@ -147,6 +148,14 @@ impl Sequence {
     /// Final function to call to play the constructed sequence over the given midi connection
     pub fn play(&mut self, conn: &mut MidiOutputConnection) {
         println!("Playing sequence with {} notes.", self.notes.len());
+        let end_date = SystemTime::now() + self.end_time;
+        let datetime: chrono::DateTime<chrono::Local> = end_date.into();
+        println!(
+            "Done at {:02}:{:02}:{:02}.",
+            datetime.hour(),
+            datetime.minute(),
+            datetime.second()
+        );
 
         let mut actions = Vec::<SequenceAction>::new();
         let mut notes = Vec::with_capacity(self.notes.len());
