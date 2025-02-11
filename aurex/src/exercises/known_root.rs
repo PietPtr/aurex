@@ -14,15 +14,21 @@ use super::Exercise;
 // Ability to seed exercises / run with random seed (but its printed)
 // new melody exercise where each bar is a slight variation of the previous (one note or rhythm), always starts as an arpeggio of a given chord
 
+// TODO: friendlier randomness, e.g. draw from all options until exhausted, then repeat
+
 // TODO: bad names
 pub enum Direction {
     Ascending,
     Descending,
+    // Picks random option
+    // Both,
 }
 
 pub enum RootPosition {
     StartOnRoot,
     EndOnRoot,
+    // Picks random option
+    // Both,
 }
 
 pub struct KnownRootExercise {

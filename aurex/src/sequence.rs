@@ -151,10 +151,11 @@ impl Sequence {
         let end_date = SystemTime::now() + self.end_time;
         let datetime: chrono::DateTime<chrono::Local> = end_date.into();
         println!(
-            "Done at {:02}:{:02}:{:02}.",
+            "Done at {:02}:{:02}:{:02} ({:.0?})",
             datetime.hour(),
             datetime.minute(),
-            datetime.second()
+            datetime.second(),
+            self.end_time
         );
 
         let mut actions = Vec::<SequenceAction>::new();

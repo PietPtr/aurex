@@ -8,7 +8,7 @@ use aurex::{
 };
 use wmidi::Note;
 
-const ROOT: Note = Note::FSharp1;
+const ROOT: Note = Note::E2;
 
 #[test]
 fn seconds() {
@@ -41,7 +41,7 @@ fn thirds() {
 #[test]
 fn thirds_but_theres_other_stuff() {
     let exercise = KnownRootExercise {
-        bpm: 78,
+        bpm: 100,
         loops: 10,
         root: ROOT,
         scale: vec![
@@ -51,7 +51,7 @@ fn thirds_but_theres_other_stuff() {
             Interval::Octave,
         ],
         direction: known_root::Direction::Ascending,
-        root_position: known_root::RootPosition::StartOnRoot,
+        root_position: known_root::RootPosition::EndOnRoot,
     };
 
     exercise.play();
@@ -60,8 +60,8 @@ fn thirds_but_theres_other_stuff() {
 #[test]
 fn fourth_and_fifths() {
     let exercise = KnownRootExercise {
-        bpm: 78,
-        loops: 10,
+        bpm: 160,
+        loops: 30,
         root: ROOT,
         scale: vec![Interval::PerfectFourth, Interval::PerfectFifth],
         direction: known_root::Direction::Ascending,
