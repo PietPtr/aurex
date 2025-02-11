@@ -37,6 +37,101 @@ pub enum Interval {
     },
 }
 
+#[derive(Hash, Debug, Clone, Copy)]
+pub enum NoteName {
+    As,
+    A,
+    Ais,
+    Bes,
+    B,
+    Bis,
+    Ces,
+    C,
+    Cis,
+    Des,
+    D,
+    Dis,
+    Es,
+    E,
+    Eis,
+    Fes,
+    F,
+    Fis,
+    Ges,
+    G,
+    Gis,
+}
+
+impl NoteName {
+    pub fn from_note_sharp(note: wmidi::Note) -> Self {
+        let note = (note as u8) % 12;
+
+        match note {
+            0 => Self::C,
+            1 => Self::Cis,
+            2 => Self::D,
+            3 => Self::Dis,
+            4 => Self::E,
+            5 => Self::F,
+            6 => Self::Fis,
+            7 => Self::G,
+            8 => Self::Gis,
+            9 => Self::A,
+            10 => Self::Ais,
+            11 => Self::B,
+            n => panic!("mod 12 does not produce {n}"),
+        }
+    }
+
+    pub fn from_note_flat(note: wmidi::Note) -> Self {
+        let note = (note as u8) % 12;
+
+        match note {
+            0 => Self::C,
+            1 => Self::Des,
+            2 => Self::D,
+            3 => Self::Es,
+            4 => Self::E,
+            5 => Self::F,
+            6 => Self::Ges,
+            7 => Self::G,
+            8 => Self::As,
+            9 => Self::A,
+            10 => Self::Bes,
+            11 => Self::B,
+            n => panic!("mod 12 does not produce {n}"),
+        }
+    }
+
+    pub fn with_octave_sharp(note: wmidi::Note) -> (Self, i8) {
+        let octave = (note as i8) / 12 - 1;
+        let note = Self::from_note_sharp(note);
+        (note, octave)
+    }
+
+    pub fn with_octave_flat(note: wmidi::Note) -> (Self, i8) {
+        let octave = (note as i8) / 12 - 1;
+        let note = Self::from_note_flat(note);
+        (note, octave)
+    }
+}
+
+impl PartialEq for NoteName {
+    fn eq(&self, other: &Self) -> bool {
+        use NoteName::*;
+        matches!(
+            (self, other),
+            (As, Gis) | (Bes, Ais) | (Ces, B) | (Des, Cis) | (Es, Dis) | (Fes, E) | (Ges, Fis)
+        ) || matches!(
+            (self, other),
+            (Gis, As) | (Ais, Bes) | (B, Ces) | (Cis, Des) | (Dis, Es) | (E, Fes) | (Fis, Ges)
+        )
+    }
+}
+
+// Did not check if this is correct
+impl Eq for NoteName {}
+
 impl Interval {
     pub fn semitones(self) -> u8 {
         match self {
@@ -98,7 +193,9 @@ pub mod chords {
 }
 
 pub mod scales {
-    use super::Interval as I;
+    use std::collections::HashSet;
+
+    use super::{Interval as I, NoteName};
 
     pub const IONIAN: &[I; 7] = &[
         I::Unison,
@@ -250,6 +347,10 @@ pub mod scales {
 
     // TODO: make a Scale trait
 
+    pub fn set_of_pitch_classes(notes: Vec<wmidi::Note>) -> HashSet<NoteName> {
+        HashSet::from_iter(notes.iter().map(|n| NoteName::from_note_sharp(*n)))
+    }
+
     pub fn scale(root: wmidi::Note, intervals: &[I]) -> Vec<wmidi::Note> {
         let mut notes = vec![];
 
@@ -294,5 +395,19 @@ pub mod scales {
         }
 
         notes
+    }
+
+    pub fn scale_range_offset(
+        root: wmidi::Note,
+        intervals: &[I],
+        start: wmidi::Note,
+        end: u8, // In semitones
+    ) -> Vec<wmidi::Note> {
+        scale_range(
+            root,
+            intervals,
+            start,
+            wmidi::Note::from_u8_lossy(start as u8 + end),
+        )
     }
 }

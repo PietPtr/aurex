@@ -1,8 +1,7 @@
 use std::rc::Rc;
 
 use crate::{
-    drums,
-    midi::{self, FINGERED_BASS},
+    drums, midi,
     sequence::{Play, Rhythm, Sequence},
     theory::{scales, Interval},
 };
@@ -38,7 +37,7 @@ pub struct KnownRootExercise {
 impl Exercise for KnownRootExercise {
     fn play(self) {
         let mut conn = midi::open_midi_connection("128:0");
-        midi::set_instrument(&mut conn, wmidi::Channel::Ch1, FINGERED_BASS);
+        midi::set_instrument(&mut conn, wmidi::Channel::Ch1, midi::FINGERED_BASS);
 
         let count_off = drums::count_off(self.bpm);
         let metronome = drums::metronome_emphasis(self.bpm).r#loop(self.loops * 2);

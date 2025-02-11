@@ -215,6 +215,7 @@ impl ChannelNote {
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct NoteWithDuration {
     pub note: Play,
     pub duration: Rhythm,
