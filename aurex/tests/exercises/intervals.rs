@@ -57,6 +57,8 @@ fn thirds_but_theres_other_stuff() {
     exercise.play();
 }
 
+// TODO: Build a metronome that accents 2 and 4 / can play at a random tempo between range / etc?
+
 #[test]
 fn fourth_and_fifths() {
     let exercise = KnownRootExercise {

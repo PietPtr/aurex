@@ -16,7 +16,7 @@ use crate::theory::Interval;
 pub struct Sequence {
     /// A collection of sequenced notes with monotonically increasing time field
     notes: VecDeque<SequencedNote>,
-    pub bpm: u64,
+    pub bpm: u64, // TODO: turn into f64
     end_time: Duration,
 }
 
