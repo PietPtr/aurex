@@ -19,3 +19,31 @@ fn warmup_metronome() {
     let mut conn = midi::open_midi_connection("128:0");
     start.combine_at_end(sequence).play(&mut conn);
 }
+
+#[test]
+fn metronome() {
+    let bpm: u64 = rand::rng().random_range(120..=140);
+
+    let mut sequence = metronome_emphasis(bpm).r#loop(1000);
+
+    let mut conn = midi::open_midi_connection("128:0");
+    sequence.play(&mut conn);
+}
+
+#[test]
+fn count_in_practice() {
+    let mut conn = midi::open_midi_connection("128:0");
+
+    for _ in 0..10 {
+        std::thread::sleep(std::time::Duration::from_millis(
+            rand::rng().random_range(900..1500),
+        ));
+
+        let bpm: u64 = rand::rng().random_range(120..=140);
+        println!("BPM: {bpm}");
+
+        let mut sequence = metronome_emphasis(bpm).r#loop(5);
+
+        sequence.play(&mut conn);
+    }
+}

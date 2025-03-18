@@ -8,7 +8,7 @@ use aurex::{
 };
 use wmidi::Note;
 
-const ROOT: Note = Note::E2;
+const ROOT: Note = Note::Eb2;
 
 #[test]
 fn seconds() {
@@ -57,12 +57,10 @@ fn thirds_but_theres_other_stuff() {
     exercise.play();
 }
 
-// TODO: Build a metronome that accents 2 and 4 / can play at a random tempo between range / etc?
-
 #[test]
 fn fourth_and_fifths() {
     let exercise = KnownRootExercise {
-        bpm: 160,
+        bpm: 90,
         loops: 30,
         root: ROOT,
         scale: vec![Interval::PerfectFourth, Interval::PerfectFifth],
