@@ -1,4 +1,5 @@
 use rand::Rng;
+use wmidi::U7;
 
 use crate::{
     drums, midi,
@@ -48,6 +49,7 @@ impl<const S: usize, const R: usize> Default for MelodyExercise<S, R> {
 impl<const S: usize, const R: usize> Exercise for MelodyExercise<S, R> {
     fn play(self) {
         let mut sequence = Sequence::new(self.bpm);
+        // TODO: some sort of utility that allows scales to be drawn from indefinitely, maybe as an iterator with 2 directions?
         let scale = scales::scale(self.root, &self.scale);
         for _ in 0..self.loops {
             let mut note_index = 0; // always start on root
@@ -74,11 +76,11 @@ impl<const S: usize, const R: usize> Exercise for MelodyExercise<S, R> {
                         .clamp(0, (scale.len() - 1) as isize);
                     note_index = new_note_index as usize;
                 }
-            }
 
-            // Fix for weights which bias the melody to go up
-            if note_index == scale.len() - 1 {
-                note_index = 0;
+                // Fix for weights which bias the melody to go up
+                if note_index == scale.len() - 1 {
+                    note_index = 0;
+                }
             }
 
             sequence.add_to_end(Play::Rest.with_duration(Rhythm::Beats(8. - beats)));
@@ -91,6 +93,8 @@ impl<const S: usize, const R: usize> Exercise for MelodyExercise<S, R> {
         let sequence = sequence.combine_simultaneous(metronome);
 
         let mut conn = midi::open_midi_connection("128:0");
+        midi::set_instrument(&mut conn, wmidi::Channel::Ch1, U7::from_u8_lossy(33));
         (count_off.combine_at_end(sequence)).play(&mut conn);
+        midi::set_instrument(&mut conn, wmidi::Channel::Ch1, U7::from_u8_lossy(1));
     }
 }

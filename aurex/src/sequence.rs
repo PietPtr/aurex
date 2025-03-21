@@ -146,6 +146,7 @@ impl Sequence {
     }
 
     /// Final function to call to play the constructed sequence over the given midi connection
+    /// TODO: if qsynth not running, run it?
     pub fn play(&mut self, conn: &mut MidiOutputConnection) {
         println!("Playing sequence with {} notes.", self.notes.len());
         let end_date = SystemTime::now() + self.end_time;

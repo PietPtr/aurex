@@ -4,8 +4,10 @@ use aurex::{
 };
 use rand::Rng;
 
+// TODO: if no qsynth, start it (and find its port)
+
 /// Clicks on 2 and 4 at a random tempo between 55 and 68 BPM
-/// TODO: maybe put this in an Exercise implementing struct with BPM as setting
+/// TODO: maybe put this in an Exercise implementing struct with BPM and metronome style and count off as settings
 #[test]
 fn warmup_metronome() {
     let mut rng = rand::rng();
@@ -22,7 +24,8 @@ fn warmup_metronome() {
 
 #[test]
 fn metronome() {
-    let bpm: u64 = rand::rng().random_range(120..=140);
+    // let bpm: u64 = rand::rng().random_range(120..=140);
+    let bpm = 118;
 
     let mut sequence = metronome_emphasis(bpm).r#loop(1000);
 

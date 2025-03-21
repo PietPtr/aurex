@@ -8,7 +8,7 @@ use aurex::{
 #[test]
 fn sixteenths() {
     let exercise = MelodyExercise {
-        bpm: 120,
+        bpm: 100,
         loops: 10,
         root: wmidi::Note::A1,
         scale: scales::MAJOR.to_vec(),

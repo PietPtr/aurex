@@ -3,19 +3,23 @@ use aurex::{
     random::RandomThings,
     sequence::Rhythm,
     staccato,
-    theory::scales,
+    theory::{scales, Interval},
 };
 
 #[test]
 fn melody() {
+    let mut scale = scales::TWO_OCTAVE_MAJOR_PENTATONIC.to_vec();
+    // scale.push(Interval::Octave);
+
+    // TODO: play everything twice setting
     let exercise = MelodyExercise {
         bpm: 65,
         loops: 10,
-        root: wmidi::Note::A1,
-        scale: scales::MAJOR.to_vec(),
+        root: wmidi::Note::Ab1,
+        scale,
         steps: RandomThings {
             things: [-2, -1, 0, 1, 2, 3],
-            weights: [3, 10, 10, 40, 40, 0],
+            weights: [3, 10, 10, 40, 40, 5],
         },
         rhythms: RandomThings {
             things: [
@@ -31,7 +35,7 @@ fn melody() {
             ],
             weights: [50, 50, 15, 2, 5],
         },
-        rest_probability: 0.0,
+        rest_probability: 0.05,
         amount_of_beats: 2.5,
         ..MelodyExercise::default()
     };
@@ -42,13 +46,13 @@ fn melody() {
 #[test]
 fn fast_no_leaps() {
     let exercise = MelodyExercise {
-        bpm: 100,
-        loops: 10,
-        root: wmidi::Note::F1,
+        bpm: 70,
+        loops: 20,
+        root: wmidi::Note::E1,
         scale: scales::TWO_OCTAVE_MAJOR.to_vec(),
         steps: RandomThings {
             things: [0, 1],
-            weights: [40, 70],
+            weights: [40, 80],
         },
         rhythms: RandomThings {
             things: [
@@ -59,8 +63,14 @@ fn fast_no_leaps() {
                     staccato!(Rhythm::QuarterTriplet),
                     staccato!(Rhythm::QuarterTriplet),
                 ],
+                vec![
+                    staccato!(Rhythm::Sixteenth),
+                    staccato!(Rhythm::Sixteenth),
+                    staccato!(Rhythm::Sixteenth),
+                    staccato!(Rhythm::Sixteenth),
+                ],
             ],
-            weights: [50, 5, 5],
+            weights: [50, 15, 5, 5],
         },
         amount_of_beats: 3.,
         rest_probability: 0.0,
