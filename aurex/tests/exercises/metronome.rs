@@ -22,11 +22,12 @@ fn warmup_metronome() {
 
 #[test]
 fn metronome() {
-    let bpm: u64 = rand::rng().random_range(120..=140);
+    // let bpm: u64 = rand::rng().random_range(120..=140);
+    let bpm = 118;
 
     let mut sequence = metronome_emphasis(bpm).r#loop(1000);
 
-    let mut conn = midi::open_midi_connection("128:0");
+    let mut conn = midi::open_midi_connection("130:0");
     sequence.play(&mut conn);
 }
 
