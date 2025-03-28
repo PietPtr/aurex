@@ -1,4 +1,4 @@
-use crate::sequence::{ChannelNote, NoteWithDuration, Play, Rhythm, Sequence};
+use crate::sequence::{ChannelNote, Play, Rhythm, Sequence};
 
 pub const SNARE: ChannelNote = ChannelNote {
     note: Play::Note(wmidi::Note::D2),
@@ -61,6 +61,16 @@ pub fn basic_backbeat(bpm: u64) -> Sequence {
     snare.add_to_end(SNARE.with_duration(Rhythm::Quarter));
 
     hats.combine_simultaneous(kick).combine_simultaneous(snare)
+}
+
+pub fn metronome(bpm: u64) -> Sequence {
+    let mut sequence = Sequence::new(bpm);
+
+    for _ in 0..4 {
+        sequence.add_to_end(METRONOME_TICK.with_duration(Rhythm::Quarter));
+    }
+
+    sequence
 }
 
 pub fn metronome_emphasis(bpm: u64) -> Sequence {

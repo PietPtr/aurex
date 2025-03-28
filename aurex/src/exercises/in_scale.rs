@@ -1,5 +1,5 @@
 use crate::{
-    drums, midi,
+    midi,
     sequence::{Play, Rhythm, Sequence},
     theory::{scales, Interval},
 };
@@ -14,21 +14,23 @@ pub struct InScaleExercise {
 }
 
 impl Exercise for InScaleExercise {
-    fn play(self) {
-        let mut conn = midi::open_midi_connection("128:0");
-
-        let count_off = drums::count_off(self.bpm);
-        let metronome = drums::metronome_emphasis(self.bpm).r#loop(self.loops * 2);
+    fn generate(&self) -> Sequence {
         let scale = scales::scale(self.root, scales::MAJOR_PENTATONIC);
-
         let mut sequence = Sequence::new(self.bpm);
         sequence.add_to_end(Play::RandomNote(scale.clone()).with_duration(Rhythm::Quarter));
         sequence.add_to_end(Play::RandomNote(scale).with_duration(Rhythm::Quarter));
         sequence.add_to_end(Play::Rest.with_duration(Rhythm::Half));
         sequence.add_to_end(Play::Rest.with_duration(Rhythm::Whole));
-        let sequence = sequence.r#loop(self.loops).combine_simultaneous(metronome);
 
-        (count_off.combine_at_end(sequence)).play(&mut conn);
+        sequence
+    }
+
+    fn instrument(&self) -> wmidi::U7 {
+        todo!()
+    }
+
+    fn bpm(&self) -> u64 {
+        todo!()
     }
 }
 
@@ -42,13 +44,8 @@ pub struct InScaleWithRangeExercise {
 }
 
 impl Exercise for InScaleWithRangeExercise {
-    fn play(self) {
+    fn generate(&self) -> Sequence {
         let notes = scales::scale_range(self.root, &self.scale, self.range_start, self.range_end);
-
-        let mut conn = midi::open_midi_connection("128:0");
-
-        let count_off = drums::count_off(self.bpm);
-        let metronome = drums::metronome_emphasis(self.bpm).r#loop(self.loops);
 
         let mut sequence = Sequence::new(self.bpm);
         sequence.add_to_end(Play::RandomNote(notes.clone()).with_duration(Rhythm::Quarter));
@@ -56,10 +53,14 @@ impl Exercise for InScaleWithRangeExercise {
         sequence.add_to_end(Play::Rest.with_duration(Rhythm::Half));
         sequence.add_to_end(Play::Rest.with_duration(Rhythm::Whole));
 
-        let sequence = sequence
-            .r#loop(self.loops * 2)
-            .combine_simultaneous(metronome);
+        sequence
+    }
 
-        (count_off.combine_at_end(sequence)).play(&mut conn);
+    fn instrument(&self) -> wmidi::U7 {
+        midi::FINGERED_BASS
+    }
+
+    fn bpm(&self) -> u64 {
+        self.bpm
     }
 }

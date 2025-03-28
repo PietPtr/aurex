@@ -1,7 +1,7 @@
-use std::rc::Rc;
+use rand::seq::IndexedRandom;
 
 use crate::{
-    drums, midi,
+    midi,
     sequence::{Play, Rhythm, Sequence},
     theory::{scales, Interval},
 };
@@ -33,7 +33,6 @@ pub enum RootPosition {
 
 pub struct KnownRootExercise {
     pub bpm: u64,
-    pub loops: u32,
     pub root: wmidi::Note,
     pub scale: Vec<Interval>,
     pub direction: Direction,
@@ -41,48 +40,36 @@ pub struct KnownRootExercise {
 }
 
 impl Exercise for KnownRootExercise {
-    fn play(self) {
-        let mut conn = midi::open_midi_connection("128:0");
-        midi::set_instrument(&mut conn, wmidi::Channel::Ch1, midi::FINGERED_BASS);
-
-        let count_off = drums::count_off(self.bpm);
-        let metronome = drums::metronome_emphasis(self.bpm).r#loop(self.loops * 2);
+    fn generate(&self) -> Sequence {
         let scale = match self.direction {
             Direction::Ascending => scales::scale(self.root, &self.scale),
             Direction::Descending => scales::descending_scale(self.root, &self.scale),
         };
 
-        // TODO: Make a spell function for scales?
-        println!("Known roots exercise on notes:\n{:?}", scale);
+        let random_note = || scale.choose(&mut rand::rng()).copied().unwrap();
 
         let mut sequence = Sequence::new(self.bpm);
         match self.root_position {
             RootPosition::StartOnRoot => {
                 sequence.add_to_end(Play::Note(self.root).with_duration(Rhythm::Quarter));
-                sequence.add_to_end(Play::RandomNote(scale).with_duration(Rhythm::Quarter));
+                sequence.add_to_end(Play::Note(random_note()).with_duration(Rhythm::Quarter));
             }
             RootPosition::EndOnRoot => {
-                sequence.add_to_end(Play::RandomNote(scale).with_duration(Rhythm::Quarter));
+                sequence.add_to_end(Play::Note(random_note()).with_duration(Rhythm::Quarter));
                 sequence.add_to_end(Play::Note(self.root).with_duration(Rhythm::Quarter));
             }
         }
+
         sequence.add_to_end(Play::Rest.with_duration(Rhythm::Half));
 
-        // Repeat the same notes to check correctness
-        sequence.add_to_end(
-            Play::ClosureNote(Rc::new(|notes| notes.get(notes.len() - 2).copied()))
-                .with_duration(Rhythm::Quarter),
-        );
-        sequence.add_to_end(
-            Play::ClosureNote(Rc::new(|notes| notes.get(notes.len() - 2).copied()))
-                .with_duration(Rhythm::Quarter),
-        );
-        sequence.add_to_end(Play::Rest.with_duration(Rhythm::Half));
+        sequence
+    }
 
-        // TODO: use closure note to repeat last bar instead of silence to easily check if correct?
+    fn instrument(&self) -> wmidi::U7 {
+        midi::FINGERED_BASS
+    }
 
-        let sequence = sequence.r#loop(self.loops).combine_simultaneous(metronome);
-
-        (count_off.combine_at_end(sequence)).play(&mut conn);
+    fn bpm(&self) -> u64 {
+        self.bpm
     }
 }

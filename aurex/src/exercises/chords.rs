@@ -1,5 +1,5 @@
 use crate::{
-    drums, midi,
+    midi,
     sequence::{Play, Rhythm, Sequence},
     theory::{scales, Interval},
 };
@@ -15,30 +15,31 @@ pub struct DiatonicChordExercise {
 }
 
 impl Exercise for DiatonicChordExercise {
-    fn play(self) {
+    fn generate(&self) -> Sequence {
         let mut sequence = Sequence::new(self.bpm);
         let scale = scales::scale(self.root, &self.scale);
 
-        for _ in 0..self.loops {
-            let chord_root_index = rand::random_range(0..scale.len());
-            let third_index = (chord_root_index + 2) % scale.len();
-            let fifth_index = (third_index + 2) % scale.len();
-            let root = *scale.get(chord_root_index).unwrap();
-            let third = *scale.get(third_index).unwrap();
-            let fifth = *scale.get(fifth_index).unwrap();
+        let chord_root_index = rand::random_range(0..scale.len());
+        let third_index = (chord_root_index + 2) % scale.len();
+        let fifth_index = (third_index + 2) % scale.len();
+        let root = *scale.get(chord_root_index).unwrap();
+        let third = *scale.get(third_index).unwrap();
+        let fifth = *scale.get(fifth_index).unwrap();
 
-            sequence.add_chord(
-                &[Play::Note(root), Play::Note(third), Play::Note(fifth)],
-                Rhythm::DoubleWhole,
-                wmidi::Channel::Ch1,
-            );
-        }
+        sequence.add_chord(
+            &[Play::Note(root), Play::Note(third), Play::Note(fifth)],
+            Rhythm::DoubleWhole,
+            wmidi::Channel::Ch1,
+        );
 
-        let count_off = drums::count_off(self.bpm);
-        let metronome = drums::metronome_emphasis(self.bpm).r#loop(self.loops * 2);
-        let sequence = sequence.combine_simultaneous(metronome);
+        sequence
+    }
 
-        let mut conn = midi::open_midi_connection("128:0");
-        (count_off.combine_at_end(sequence)).play(&mut conn);
+    fn instrument(&self) -> wmidi::U7 {
+        midi::GRAND_PIANO
+    }
+
+    fn bpm(&self) -> u64 {
+        self.bpm
     }
 }

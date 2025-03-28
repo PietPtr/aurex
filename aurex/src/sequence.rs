@@ -12,7 +12,7 @@ use wmidi::{MidiMessage, U7};
 
 use crate::theory::Interval;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Sequence {
     /// A collection of sequenced notes with monotonically increasing time field
     notes: VecDeque<SequencedNote>,
@@ -34,6 +34,10 @@ impl Sequence {
         self.end_time += note.duration.time(self.bpm);
         self.notes.push_back(note);
         self.end_time
+    }
+
+    pub fn length_in_beats(&self) -> f64 {
+        self.end_time.as_secs_f64() / self.bpm as f64
     }
 
     pub fn add_to_end(&mut self, note: NoteWithDuration) -> Duration {
@@ -127,20 +131,20 @@ impl Sequence {
 
     /// Takes the current notes in the sequence and loops them a given amount of times.
     /// The end time is updated to reflect the looping.
-    pub fn r#loop(mut self, loops: u32) -> Self {
-        let mut notes = VecDeque::with_capacity(self.notes.len() * loops as usize);
+    pub fn r#loop(mut self, loops: usize) -> Self {
+        let mut notes = VecDeque::with_capacity(self.notes.len() * loops);
 
         for iteration in 0..loops {
             for note in self.notes.iter() {
                 let mut note = note.clone();
-                note.time += self.end_time * iteration;
+                note.time += self.end_time * iteration as u32;
                 notes.push_back(note);
             }
         }
 
         self.notes = notes;
 
-        self.end_time = self.end_time * loops;
+        self.end_time *= loops as u32;
 
         self
     }
@@ -440,7 +444,7 @@ impl Rhythm {
             Rhythm::DottedHalf => 3 * ns_per_beat,
             Rhythm::Half => 2 * ns_per_beat,
             Rhythm::DottedQuarter => (1.5 * ns_per_beat as f64) as u64,
-            Rhythm::Quarter => 1 * ns_per_beat,
+            Rhythm::Quarter => ns_per_beat,
             Rhythm::DottedEighth => (0.75 * ns_per_beat as f64) as u64,
             Rhythm::Eighth => ns_per_beat / 2,
             Rhythm::QuarterTriplet => ns_per_beat / 3,

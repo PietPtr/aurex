@@ -1,8 +1,7 @@
 use rand::Rng;
-use wmidi::U7;
 
 use crate::{
-    drums, midi,
+    midi,
     random::RandomThings,
     sequence::{Play, Rhythm, Sequence},
     theory::{scales, Interval},
@@ -14,7 +13,6 @@ use super::Exercise;
 /// Never leaping more than 2 steps in the scale
 pub struct MelodyExercise<const S: usize, const R: usize> {
     pub bpm: u64,
-    pub loops: u32,
     pub root: wmidi::Note,
     pub scale: Vec<Interval>,
     pub steps: RandomThings<isize, S>,
@@ -29,7 +27,6 @@ impl<const S: usize, const R: usize> Default for MelodyExercise<S, R> {
         const ARRAY_REPEAT_VALUE: Vec<Rhythm> = Vec::new();
         Self {
             bpm: 80,
-            loops: 1,
             root: wmidi::Note::C4,
             scale: scales::MAJOR.to_vec(),
             steps: RandomThings {
@@ -47,54 +44,52 @@ impl<const S: usize, const R: usize> Default for MelodyExercise<S, R> {
 }
 
 impl<const S: usize, const R: usize> Exercise for MelodyExercise<S, R> {
-    fn play(self) {
+    fn generate(&self) -> Sequence {
         let mut sequence = Sequence::new(self.bpm);
         // TODO: some sort of utility that allows scales to be drawn from indefinitely, maybe as an iterator with 2 directions?
         let scale = scales::scale(self.root, &self.scale);
-        for _ in 0..self.loops {
-            let mut note_index = 0; // always start on root
-            let mut beats = 0.;
 
-            while beats < self.amount_of_beats {
-                let mut rhythms = self.rhythms.sample().clone();
+        let mut note_index = 0; // always start on root
+        let mut beats = 0.;
 
-                while let Some(rhythm) = rhythms.pop() {
-                    let note = scale[note_index];
+        while beats < self.amount_of_beats {
+            let mut rhythms = self.rhythms.sample().clone();
 
-                    let note = if rand::rng().random::<f64>() < self.rest_probability {
-                        Play::Rest.with_duration(rhythm.clone())
-                    } else {
-                        Play::Note(note).with_duration(rhythm.clone())
-                    };
+            while let Some(rhythm) = rhythms.pop() {
+                let note = scale[note_index];
 
-                    sequence.add_to_end(note);
+                let note = if rand::rng().random::<f64>() < self.rest_probability {
+                    Play::Rest.with_duration(rhythm.clone())
+                } else {
+                    Play::Note(note).with_duration(rhythm.clone())
+                };
 
-                    beats += rhythm.beats();
+                sequence.add_to_end(note);
 
-                    let new_note_index = (note_index as isize)
-                        .saturating_add(*self.steps.sample())
-                        .clamp(0, (scale.len() - 1) as isize);
-                    note_index = new_note_index as usize;
-                }
+                beats += rhythm.beats();
 
-                // Fix for weights which bias the melody to go up
-                if note_index == scale.len() - 1 {
-                    note_index = 0;
-                }
+                let new_note_index = (note_index as isize)
+                    .saturating_add(*self.steps.sample())
+                    .clamp(0, (scale.len() - 1) as isize);
+                note_index = new_note_index as usize;
             }
 
-            sequence.add_to_end(Play::Rest.with_duration(Rhythm::Beats(8. - beats)));
+            // Fix for weights which bias the melody to go up
+            if note_index == scale.len() - 1 {
+                note_index = 0;
+            }
         }
 
-        sequence.add_to_end(Play::Note(self.root).with_duration(Rhythm::Half));
+        sequence.add_to_end(Play::Rest.with_duration(Rhythm::Beats(8. - beats)));
 
-        let count_off = drums::count_off(self.bpm);
-        let metronome = drums::metronome_emphasis(self.bpm).r#loop(self.loops * 2);
-        let sequence = sequence.combine_simultaneous(metronome);
+        sequence
+    }
 
-        let mut conn = midi::open_midi_connection("128:0");
-        midi::set_instrument(&mut conn, wmidi::Channel::Ch1, U7::from_u8_lossy(33));
-        (count_off.combine_at_end(sequence)).play(&mut conn);
-        midi::set_instrument(&mut conn, wmidi::Channel::Ch1, U7::from_u8_lossy(1));
+    fn instrument(&self) -> wmidi::U7 {
+        midi::FINGERED_BASS
+    }
+
+    fn bpm(&self) -> u64 {
+        self.bpm
     }
 }
