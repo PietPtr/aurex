@@ -11,7 +11,7 @@ use aurex::{
 fn sixteenths() {
     let exercise = PlayOnce {
         exercise: MelodyExercise {
-            bpm: 120,
+            bpm: 120.,
             root: wmidi::Note::A1,
             scale: scales::MAJOR.to_vec(),
             steps: RandomThings {

@@ -16,7 +16,7 @@ const ROOT: Note = Note::Eb2;
 fn seconds() {
     let exercise = PlayTwice {
         exercise: KnownRootExercise {
-            bpm: 78,
+            bpm: 78.,
             root: ROOT,
             scale: vec![Interval::MinorSecond, Interval::MajorSecond],
             direction: known_root::Direction::Ascending,
@@ -33,7 +33,7 @@ fn seconds() {
 fn thirds() {
     let exercise = PlayTwice {
         exercise: KnownRootExercise {
-            bpm: 78,
+            bpm: 78.,
             root: ROOT,
             scale: vec![Interval::MinorThird, Interval::MajorThird],
             direction: known_root::Direction::Ascending,
@@ -50,7 +50,7 @@ fn thirds() {
 fn thirds_but_theres_other_stuff() {
     let exercise = PlayTwice {
         exercise: KnownRootExercise {
-            bpm: 100,
+            bpm: 100.,
             root: ROOT,
             scale: vec![
                 Interval::MinorThird,
@@ -72,7 +72,7 @@ fn thirds_but_theres_other_stuff() {
 fn fourth_and_fifths() {
     let exercise = PlayTwice {
         exercise: KnownRootExercise {
-            bpm: 160,
+            bpm: 160.,
             root: ROOT,
             scale: vec![Interval::PerfectFourth, Interval::PerfectFifth],
             direction: known_root::Direction::Ascending,
@@ -89,7 +89,7 @@ fn fourth_and_fifths() {
 fn major_fourth_and_fifths() {
     let exercise = PlayTwice {
         exercise: KnownRootExercise {
-            bpm: 78,
+            bpm: 78.,
             root: ROOT,
             scale: vec![
                 Interval::MajorThird,
@@ -110,7 +110,7 @@ fn major_fourth_and_fifths() {
 fn sixths() {
     let exercise = PlayTwice {
         exercise: KnownRootExercise {
-            bpm: 78,
+            bpm: 78.,
             root: ROOT,
             scale: vec![Interval::MinorSixth, Interval::MajorSixth],
             direction: known_root::Direction::Ascending,
@@ -127,7 +127,7 @@ fn sixths() {
 fn sevenths() {
     let exercise = PlayTwice {
         exercise: KnownRootExercise {
-            bpm: 78,
+            bpm: 78.,
             root: ROOT,
             scale: vec![Interval::MinorSeventh, Interval::MajorSeventh],
             direction: known_root::Direction::Ascending,
@@ -144,7 +144,7 @@ fn sevenths() {
 fn major_pentatonic_known_root() {
     let exercise = PlayTwice {
         exercise: KnownRootExercise {
-            bpm: 100,
+            bpm: 100.,
             root: ROOT,
             scale: scales::MAJOR_PENTATONIC.to_vec(),
             direction: known_root::Direction::Ascending,
@@ -161,7 +161,7 @@ fn major_pentatonic_known_root() {
 fn major_pentatonic() {
     let exercise = PlayTwice {
         exercise: InScaleExercise {
-            bpm: 100,
+            bpm: 100.,
             loops: 10,
             root: ROOT,
             scale: scales::MAJOR_PENTATONIC.to_vec(),
@@ -177,7 +177,7 @@ fn major_pentatonic() {
 fn major() {
     let exercise = PlayTwice {
         exercise: KnownRootExercise {
-            bpm: 100,
+            bpm: 100.,
             root: ROOT,
             scale: scales::MAJOR.to_vec(),
             direction: known_root::Direction::Ascending,
@@ -194,7 +194,7 @@ fn major() {
 fn minor() {
     let exercise = PlayTwice {
         exercise: KnownRootExercise {
-            bpm: 90,
+            bpm: 90.,
             root: ROOT,
             scale: scales::TWO_OCTAVE_MINOR[0..8].to_vec(),
             direction: known_root::Direction::Ascending,
@@ -211,7 +211,7 @@ fn minor() {
 fn two_octave_major_pentatonic() {
     let exercise = PlayTwice {
         exercise: InScaleWithRangeExercise {
-            bpm: 100,
+            bpm: 100.,
             loops: 10,
             root: ROOT,
             scale: scales::MAJOR_PENTATONIC.to_vec(),
@@ -229,7 +229,7 @@ fn two_octave_major_pentatonic() {
 fn part_of_major() {
     let exercise = PlayTwice {
         exercise: InScaleWithRangeExercise {
-            bpm: 100,
+            bpm: 100.,
             loops: 10,
             root: ROOT,
             scale: scales::MAJOR.to_vec(),

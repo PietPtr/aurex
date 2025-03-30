@@ -10,7 +10,7 @@ use wmidi::Note;
 fn diatonic_chords() {
     let exercise = PlayOnce {
         exercise: DiatonicChordExercise {
-            bpm: 75,
+            bpm: 75.,
             loops: 10,
             root: Note::C3,
             scale: scales::MAJOR.to_vec(),

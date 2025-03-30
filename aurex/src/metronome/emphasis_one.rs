@@ -5,7 +5,7 @@ use super::Metronome;
 pub struct EmphasisOneMetronome {}
 
 impl Metronome for EmphasisOneMetronome {
-    fn generate(bpm: u64) -> Sequence {
+    fn generate(bpm: f64) -> Sequence {
         drums::metronome_emphasis(bpm)
     }
 }

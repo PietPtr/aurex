@@ -38,7 +38,7 @@
 
 //     let exercise = PlayTwice {
 //         exercise: VariatorExercise {
-//             bpm: 78,
+//             bpm: 78.,
 //             loops: 10,
 //             root,
 //             scale: base_scale,

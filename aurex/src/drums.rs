@@ -30,7 +30,7 @@ pub const METRONOME_EMPH: ChannelNote = ChannelNote {
     channel: wmidi::Channel::Ch10,
 };
 
-pub fn count_off(bpm: u64) -> Sequence {
+pub fn count_off(bpm: f64) -> Sequence {
     let mut sequence = Sequence::new(bpm);
 
     for _ in 0..2 {
@@ -44,7 +44,7 @@ pub fn count_off(bpm: u64) -> Sequence {
     sequence
 }
 
-pub fn basic_backbeat(bpm: u64) -> Sequence {
+pub fn basic_backbeat(bpm: f64) -> Sequence {
     let mut hats = Sequence::new(bpm);
     let mut kick = Sequence::new(bpm);
     let mut snare = Sequence::new(bpm);
@@ -63,7 +63,7 @@ pub fn basic_backbeat(bpm: u64) -> Sequence {
     hats.combine_simultaneous(kick).combine_simultaneous(snare)
 }
 
-pub fn metronome(bpm: u64) -> Sequence {
+pub fn metronome(bpm: f64) -> Sequence {
     let mut sequence = Sequence::new(bpm);
 
     for _ in 0..4 {
@@ -73,7 +73,7 @@ pub fn metronome(bpm: u64) -> Sequence {
     sequence
 }
 
-pub fn metronome_emphasis(bpm: u64) -> Sequence {
+pub fn metronome_emphasis(bpm: f64) -> Sequence {
     let mut sequence = Sequence::new(bpm);
 
     sequence.add_to_end(METRONOME_EMPH.with_duration(Rhythm::Quarter));
@@ -85,7 +85,7 @@ pub fn metronome_emphasis(bpm: u64) -> Sequence {
     sequence
 }
 
-pub fn metronome_backbeat(bpm: u64) -> Sequence {
+pub fn metronome_backbeat(bpm: f64) -> Sequence {
     let mut sequence = Sequence::new(bpm);
 
     sequence.add_to_end(Play::Rest.with_duration(Rhythm::Quarter));

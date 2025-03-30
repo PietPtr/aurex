@@ -8,7 +8,7 @@ use super::Exercise;
 
 /// Exercise that plays a three note chord built from one of the notes from the scale.
 pub struct DiatonicChordExercise {
-    pub bpm: u64,
+    pub bpm: f64,
     pub loops: u32,
     pub root: wmidi::Note,
     pub scale: Vec<Interval>,
@@ -39,7 +39,7 @@ impl Exercise for DiatonicChordExercise {
         midi::GRAND_PIANO
     }
 
-    fn bpm(&self) -> u64 {
+    fn bpm(&self) -> f64 {
         self.bpm
     }
 }

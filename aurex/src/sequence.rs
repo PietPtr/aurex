@@ -15,12 +15,12 @@ use crate::theory::Interval;
 pub struct Sequence {
     /// A collection of sequenced notes with monotonically increasing time field
     notes: VecDeque<SequencedNote>,
-    pub bpm: u64, // TODO: turn into f64
+    pub bpm: f64, // TODO: turn into f64
     end_time: Duration,
 }
 
 impl Sequence {
-    pub fn new(bpm: u64) -> Self {
+    pub fn new(bpm: f64) -> Self {
         Self {
             notes: VecDeque::new(),
             bpm,
@@ -93,8 +93,8 @@ impl Sequence {
     /// Add a note to the sequence at the last end time + the given beat offset, which is a number representing amount of beats.
     /// May be negative.
     pub fn add_beat_offset(&mut self, beat_offset: f64, note: NoteWithDuration) -> Duration {
-        let ns_per_beat = 60_000_000_000 / self.bpm;
-        let time = self.end_time.as_nanos() as i64 + (ns_per_beat as f64 * beat_offset) as i64;
+        let ns_per_beat = 60_000_000_000. / self.bpm;
+        let time = self.end_time.as_nanos() as i64 + (ns_per_beat * beat_offset) as i64;
         let time = Duration::from_nanos(time as u64);
 
         self.end_time = self.end_time.max(time + note.duration.time(self.bpm));
@@ -432,8 +432,8 @@ pub enum Rhythm {
 }
 
 impl Rhythm {
-    pub fn time(&self, bpm: u64) -> Duration {
-        let ns_per_beat = 60_000_000_000 / bpm;
+    pub fn time(&self, bpm: f64) -> Duration {
+        let ns_per_beat = (60_000_000_000.0 / bpm) as u64;
         Duration::from_nanos(match self {
             Rhythm::DoubleWhole => 8 * ns_per_beat,
             Rhythm::Whole => 4 * ns_per_beat,
@@ -450,7 +450,7 @@ impl Rhythm {
         })
     }
 
-    pub fn play_time(&self, bpm: u64) -> Duration {
+    pub fn play_time(&self, bpm: f64) -> Duration {
         match self {
             Rhythm::Staccato(rhythm) => {
                 Duration::from_nanos(((rhythm.time(bpm).as_nanos() as f64) * 0.8) as u64)

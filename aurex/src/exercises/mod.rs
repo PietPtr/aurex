@@ -10,7 +10,7 @@ pub mod walking;
 pub trait Exercise {
     fn generate(&self) -> Sequence;
     fn instrument(&self) -> wmidi::U7;
-    fn bpm(&self) -> u64;
+    fn bpm(&self) -> f64;
 }
 
 pub fn play<E: Exercise>(exercise: E) {

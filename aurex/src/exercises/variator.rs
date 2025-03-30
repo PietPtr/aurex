@@ -11,7 +11,7 @@
 // use super::Exercise;
 
 // pub struct VariatorExercise {
-//     pub bpm: u64,
+//     pub bpm: f64,
 //     pub loops: u32,
 //     pub root: wmidi::Note,
 //     pub scale: Vec<Interval>,

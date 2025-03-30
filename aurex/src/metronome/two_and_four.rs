@@ -5,7 +5,7 @@ use super::Metronome;
 pub struct TwoAndFourMetronome {}
 
 impl Metronome for TwoAndFourMetronome {
-    fn generate(bpm: u64) -> Sequence {
+    fn generate(bpm: f64) -> Sequence {
         drums::metronome_backbeat(bpm)
     }
 }

@@ -15,7 +15,7 @@ fn melody() {
 
     let exercise = PlayOnce {
         exercise: MelodyExercise {
-            bpm: 65,
+            bpm: 65.,
             root: wmidi::Note::A1,
             scale,
             steps: RandomThings {
@@ -50,7 +50,7 @@ fn melody() {
 fn fast_no_leaps() {
     let exercise = PlayOnce {
         exercise: MelodyExercise {
-            bpm: 100,
+            bpm: 100.,
             root: wmidi::Note::F1,
             scale: scales::TWO_OCTAVE_MAJOR.to_vec(),
             steps: RandomThings {
@@ -86,7 +86,7 @@ fn fast_no_leaps() {
 fn short_ascending() {
     let exercise = PlayOnce {
         exercise: MelodyExercise {
-            bpm: 120,
+            bpm: 120.,
             root: wmidi::Note::F1,
             scale: scales::MAJOR.to_vec(),
             steps: RandomThings {
@@ -113,7 +113,7 @@ fn short_ascending() {
 fn four_beats() {
     let exercise = PlayOnce {
         exercise: MelodyExercise {
-            bpm: 70,
+            bpm: 70.,
             root: wmidi::Note::C2,
             scale: scales::MAJOR.to_vec(),
             steps: RandomThings {

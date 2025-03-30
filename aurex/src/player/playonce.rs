@@ -37,7 +37,7 @@ impl<E: Exercise, M: Metronome> Exercise for PlayOnce<E, M> {
         self.exercise.instrument()
     }
 
-    fn bpm(&self) -> u64 {
+    fn bpm(&self) -> f64 {
         self.exercise.bpm()
     }
 }

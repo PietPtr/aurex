@@ -8,7 +8,7 @@ use super::Metronome;
 pub struct OffbeatMetronome {}
 
 impl Metronome for OffbeatMetronome {
-    fn generate(bpm: u64) -> Sequence {
+    fn generate(bpm: f64) -> Sequence {
         let mut sequence = Sequence::new(bpm);
 
         sequence.add_to_end(Play::Rest.with_duration(Rhythm::Eighth));

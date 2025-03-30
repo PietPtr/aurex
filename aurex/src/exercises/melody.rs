@@ -12,7 +12,7 @@ use super::Exercise;
 /// Generates a melody of at most 3 beats consisting of querter and eighth notes and triplets
 /// Never leaping more than 2 steps in the scale
 pub struct MelodyExercise<const S: usize, const R: usize> {
-    pub bpm: u64,
+    pub bpm: f64,
     pub root: wmidi::Note,
     pub scale: Vec<Interval>,
     pub steps: RandomThings<isize, S>,
@@ -26,7 +26,7 @@ impl<const S: usize, const R: usize> Default for MelodyExercise<S, R> {
     fn default() -> Self {
         const ARRAY_REPEAT_VALUE: Vec<Rhythm> = Vec::new();
         Self {
-            bpm: 80,
+            bpm: 80.,
             root: wmidi::Note::C4,
             scale: scales::MAJOR.to_vec(),
             steps: RandomThings {
@@ -89,7 +89,7 @@ impl<const S: usize, const R: usize> Exercise for MelodyExercise<S, R> {
         midi::FINGERED_BASS
     }
 
-    fn bpm(&self) -> u64 {
+    fn bpm(&self) -> f64 {
         self.bpm
     }
 }

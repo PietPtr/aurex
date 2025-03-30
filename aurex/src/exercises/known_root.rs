@@ -32,7 +32,7 @@ pub enum RootPosition {
 }
 
 pub struct KnownRootExercise {
-    pub bpm: u64,
+    pub bpm: f64,
     pub root: wmidi::Note,
     pub scale: Vec<Interval>,
     pub direction: Direction,
@@ -69,7 +69,7 @@ impl Exercise for KnownRootExercise {
         midi::FINGERED_BASS
     }
 
-    fn bpm(&self) -> u64 {
+    fn bpm(&self) -> f64 {
         self.bpm
     }
 }

@@ -7,7 +7,7 @@ use crate::{
 use super::Exercise;
 
 pub struct InScaleExercise {
-    pub bpm: u64,
+    pub bpm: f64,
     pub loops: u32,
     pub root: wmidi::Note,
     pub scale: Vec<Interval>,
@@ -29,13 +29,13 @@ impl Exercise for InScaleExercise {
         todo!()
     }
 
-    fn bpm(&self) -> u64 {
+    fn bpm(&self) -> f64 {
         todo!()
     }
 }
 
 pub struct InScaleWithRangeExercise {
-    pub bpm: u64,
+    pub bpm: f64,
     pub loops: u32,
     pub root: wmidi::Note,
     pub scale: Vec<Interval>,
@@ -60,7 +60,7 @@ impl Exercise for InScaleWithRangeExercise {
         midi::FINGERED_BASS
     }
 
-    fn bpm(&self) -> u64 {
+    fn bpm(&self) -> f64 {
         self.bpm
     }
 }

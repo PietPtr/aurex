@@ -7,5 +7,5 @@ pub mod offbeat;
 pub mod two_and_four;
 
 pub trait Metronome {
-    fn generate(bpm: u64) -> Sequence;
+    fn generate(bpm: f64) -> Sequence;
 }
