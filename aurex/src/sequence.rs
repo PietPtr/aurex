@@ -1,7 +1,6 @@
 use std::{
     collections::VecDeque,
     fmt,
-    rc::Rc,
     time::{Duration, Instant, SystemTime},
 };
 
@@ -254,7 +253,6 @@ pub enum Play {
     Rest,
     Note(wmidi::Note),
     RandomNote(Vec<wmidi::Note>),
-    ClosureNote(Rc<dyn Fn(&Vec<wmidi::Note>) -> Option<wmidi::Note>>),
 }
 
 macro_rules! note {
@@ -266,7 +264,7 @@ macro_rules! note {
 }
 
 impl Play {
-    pub fn note(&self, notes: &Vec<wmidi::Note>) -> Option<wmidi::Note> {
+    pub fn note(&self, notes: &[wmidi::Note]) -> Option<wmidi::Note> {
         match self {
             Play::Rest => None,
             Play::Note(note) => Some(*note),
@@ -288,7 +286,6 @@ impl Play {
                     vec.choose(&mut rand::rng()).copied()
                 }
             }
-            Play::ClosureNote(function) => function(notes),
         }
     }
 
@@ -414,7 +411,6 @@ impl fmt::Debug for Play {
             Play::Rest => f.write_str("Rest"),
             Play::Note(note) => f.debug_tuple("Note").field(note).finish(),
             Play::RandomNote(notes) => f.debug_tuple("RandomNote").field(notes).finish(),
-            Play::ClosureNote(_) => f.write_str("ClosureNote(<function>)"),
         }
     }
 }

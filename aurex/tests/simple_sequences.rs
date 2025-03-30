@@ -1,14 +1,10 @@
-use std::rc::Rc;
-
 use aurex::{
     sequence::{NoteWithDuration, Play, Rhythm, Sequence},
     theory::chords,
 };
 use wmidi::{Channel, Note};
 
-// TODO: a first practice sequence: drums + a fourth or fifth above the given root
-
-/// Plays a C major chord, then either the C above or the C below that chord twice.
+/// Plays a C major chord, then either the C above or the C below that chord.
 #[test]
 fn first_sequence() {
     let mut conn = aurex::midi::open_midi_connection("128:0");
@@ -40,14 +36,6 @@ fn first_sequence() {
         duration: Rhythm::Eighth,
         channel: Channel::Ch1,
     });
-    sequence.add_beat_offset(
-        Rhythm::Eighth.beats(),
-        NoteWithDuration {
-            note: Play::ClosureNote(Rc::new(|notes| notes.last().copied())),
-            duration: Rhythm::Half,
-            channel: Channel::Ch1,
-        },
-    );
 
     sequence.play(&mut conn);
 }

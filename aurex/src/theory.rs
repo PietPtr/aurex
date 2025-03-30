@@ -1,3 +1,5 @@
+use std::hash::Hash;
+
 #[derive(Debug, Clone, Copy)]
 pub enum Interval {
     Unison,
@@ -37,7 +39,7 @@ pub enum Interval {
     },
 }
 
-#[derive(Hash, Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy)]
 pub enum NoteName {
     As,
     A,
@@ -126,6 +128,25 @@ impl PartialEq for NoteName {
             (self, other),
             (Gis, As) | (Ais, Bes) | (B, Ces) | (Cis, Des) | (Dis, Es) | (E, Fes) | (Fis, Ges)
         )
+    }
+}
+
+impl Hash for NoteName {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        match self {
+            NoteName::As | NoteName::Gis => 0u8.hash(state),
+            NoteName::A => 1u8.hash(state),
+            NoteName::Ais | NoteName::Bes => 2u8.hash(state),
+            NoteName::B | NoteName::Ces => 3u8.hash(state),
+            NoteName::Bis | NoteName::C => 4u8.hash(state),
+            NoteName::Cis | NoteName::Des => 5u8.hash(state),
+            NoteName::D => 6u8.hash(state),
+            NoteName::Dis | NoteName::Es => 7u8.hash(state),
+            NoteName::E | NoteName::Fes => 8u8.hash(state),
+            NoteName::Eis | NoteName::F => 9u8.hash(state),
+            NoteName::Fis | NoteName::Ges => 10u8.hash(state),
+            NoteName::G => 11u8.hash(state),
+        }
     }
 }
 

@@ -36,7 +36,6 @@ fn melody() {
                 ],
                 weights: [50, 50, 15, 2, 5],
             },
-            rest_probability: 0.0,
             amount_of_beats: 2.5,
             ..MelodyExercise::default()
         },
@@ -71,7 +70,6 @@ fn fast_no_leaps() {
                 weights: [50, 5, 5],
             },
             amount_of_beats: 3.,
-            rest_probability: 0.0,
             ..MelodyExercise::default()
         },
         metronome: BackbeatMetronome {},

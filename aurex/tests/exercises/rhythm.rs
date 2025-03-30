@@ -46,7 +46,6 @@ fn sixteenths() {
             },
             amount_of_beats: 1.,
             rest_probability: 0.2,
-            ..MelodyExercise::default()
         },
         metronome: BeatMetronome {},
         loops: 10,
