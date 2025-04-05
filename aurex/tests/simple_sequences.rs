@@ -8,7 +8,7 @@ use wmidi::{Channel, Note};
 #[test]
 fn first_sequence() {
     let mut conn = aurex::midi::open_midi_connection("128:0");
-    let mut sequence = Sequence::new(120);
+    let mut sequence = Sequence::new(120.);
 
     sequence.add_to_end(NoteWithDuration {
         note: Play::c(4),
@@ -43,7 +43,7 @@ fn first_sequence() {
 #[test]
 fn add_simultaneous() {
     let mut conn = aurex::midi::open_midi_connection("128:0");
-    let mut sequence = Sequence::new(90);
+    let mut sequence = Sequence::new(90.);
 
     sequence.add_simultaneous(NoteWithDuration {
         note: Play::c(4),
@@ -69,7 +69,7 @@ fn add_simultaneous() {
 #[test]
 fn add_chords() {
     let mut conn = aurex::midi::open_midi_connection("128:0");
-    let mut sequence = Sequence::new(78);
+    let mut sequence = Sequence::new(78.);
 
     let c_major = Play::c(4).chord(chords::MAJOR);
     let d_minor = Play::d(4).chord(chords::MINOR);

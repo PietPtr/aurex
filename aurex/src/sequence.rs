@@ -36,7 +36,7 @@ impl Sequence {
     }
 
     pub fn length_in_beats(&self) -> f64 {
-        self.end_time.as_secs_f64() / self.bpm as f64
+        (self.end_time.as_secs_f64() / 60.) * self.bpm
     }
 
     pub fn add_to_end(&mut self, note: NoteWithDuration) -> Duration {

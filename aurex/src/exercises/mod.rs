@@ -16,7 +16,7 @@ pub trait Exercise {
 pub fn play<E: Exercise>(exercise: E) {
     let mut seq = exercise.generate();
 
-    let mut conn = midi::open_midi_connection("128:0");
+    let mut conn = midi::open_midi_connection("FLUID Synth");
     midi::set_instrument(&mut conn, wmidi::Channel::Ch1, exercise.instrument());
 
     seq.play(&mut conn);

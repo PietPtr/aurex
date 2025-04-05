@@ -1,6 +1,7 @@
 use aurex::{
     exercises::{melody::MelodyExercise, play},
     metronome::backbeat::BackbeatMetronome,
+    midi,
     player::playonce::PlayOnce,
     random::RandomThings,
     sequence::Rhythm,
@@ -70,6 +71,7 @@ fn fast_no_leaps() {
                 weights: [50, 5, 5],
             },
             amount_of_beats: 3.,
+            instrument: midi::GRAND_PIANO,
             ..MelodyExercise::default()
         },
         metronome: BackbeatMetronome {},

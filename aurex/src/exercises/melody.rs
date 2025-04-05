@@ -20,6 +20,7 @@ pub struct MelodyExercise<const S: usize, const R: usize> {
     pub rest_probability: f64,
     /// Length of the melody in beats
     pub amount_of_beats: f64,
+    pub instrument: wmidi::U7,
 }
 
 impl<const S: usize, const R: usize> Default for MelodyExercise<S, R> {
@@ -39,6 +40,7 @@ impl<const S: usize, const R: usize> Default for MelodyExercise<S, R> {
             },
             rest_probability: 0.0,
             amount_of_beats: 4.0,
+            instrument: midi::FINGERED_BASS,
         }
     }
 }
@@ -86,7 +88,7 @@ impl<const S: usize, const R: usize> Exercise for MelodyExercise<S, R> {
     }
 
     fn instrument(&self) -> wmidi::U7 {
-        midi::FINGERED_BASS
+        self.instrument
     }
 
     fn bpm(&self) -> f64 {

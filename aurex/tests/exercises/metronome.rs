@@ -1,13 +1,13 @@
 use aurex::{
-    drums::{self, metronome_backbeat, metronome_emphasis},
+    drums::{self, metronome_emphasis},
     exercises::{play, Exercise},
-    metronome::{backbeat::BackbeatMetronome, emphasis_one::EmphasisOneMetronome, Metronome},
+    metronome::{emphasis_one::EmphasisOneMetronome, two_and_four::TwoAndFourMetronome, Metronome},
     midi,
     sequence::Sequence,
 };
 use rand::Rng;
 
-// TODO: if no qsynth, start it (and find its port)
+// TODO: if no qsynth, start it
 
 pub struct MetronomeExercise<M: Metronome> {
     pub metronome: M,
@@ -28,7 +28,8 @@ impl<M: Metronome> Exercise for MetronomeExercise<M> {
     }
 
     fn instrument(&self) -> wmidi::U7 {
-        todo!() // TODO: ..channels?
+        // TODO: ..channels?
+        midi::FINGERED_BASS
     }
 
     fn bpm(&self) -> f64 {
@@ -42,12 +43,12 @@ fn warmup_metronome() {
     let mut rng = rand::rng();
     let bpm: f64 = rng.random_range(55f64..=68f64);
 
-    println!("Backbeat metronome at ~{bpm:.0}BPM");
+    println!("Two and Four metronome at ~{bpm:.0}BPM");
 
     let exercise = MetronomeExercise {
-        metronome: BackbeatMetronome {},
+        metronome: TwoAndFourMetronome {},
         countoff: true,
-        loops: 10,
+        loops: 1000,
         bpm,
     };
 
@@ -56,13 +57,16 @@ fn warmup_metronome() {
 
 #[test]
 fn metronome() {
-    // let bpm: f64 = rand::rng().random_range(120f64..=140.);
     let bpm = 118.;
 
-    let mut sequence = metronome_emphasis(bpm).r#loop(1000);
+    let exercise = MetronomeExercise {
+        metronome: EmphasisOneMetronome {},
+        countoff: true,
+        loops: 1000,
+        bpm,
+    };
 
-    let mut conn = midi::open_midi_connection("128:0");
-    sequence.play(&mut conn);
+    play(exercise);
 }
 
 #[test]
