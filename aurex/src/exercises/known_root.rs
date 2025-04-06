@@ -3,7 +3,7 @@ use rand::seq::IndexedRandom;
 use crate::{
     midi,
     sequence::{Play, Rhythm, Sequence},
-    theory::{scales, Interval},
+    theory::{intervals::Interval, scales},
 };
 
 use super::Exercise;

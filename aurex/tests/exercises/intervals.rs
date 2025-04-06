@@ -6,7 +6,7 @@ use aurex::{
     },
     metronome::emphasis_one::EmphasisOneMetronome,
     player::playtwice::PlayTwice,
-    theory::{scales, Interval},
+    theory::{intervals::Interval, scales},
 };
 use wmidi::Note;
 

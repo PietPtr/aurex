@@ -9,7 +9,7 @@ use midir::MidiOutputConnection;
 use rand::seq::IndexedRandom;
 use wmidi::{MidiMessage, U7};
 
-use crate::theory::Interval;
+use crate::theory::intervals::Interval;
 
 #[derive(Debug, Clone)]
 pub struct Sequence {
@@ -308,7 +308,7 @@ impl Play {
         notes
     }
 
-    /// Build a chord from a given root and the constituent intervals. Only works for Play::Note..
+    /// Build a chord from a given root and the constituent intervals. Only works for Play::Note.
     /// e.g. to construct a maj7 pass in the intervals MajorThird, PerfectFifth, MajorSeventh
     pub fn chord(&self, intervals: &[Interval]) -> Vec<Play> {
         let Self::Note(note) = self else {

@@ -6,7 +6,7 @@ use aurex::{
     random::RandomThings,
     sequence::Rhythm,
     staccato,
-    theory::{scales, Interval},
+    theory::{intervals::Interval, scales},
 };
 
 #[test]
@@ -135,7 +135,7 @@ fn four_beats() {
             ..MelodyExercise::default()
         },
         metronome: BackbeatMetronome {},
-        loops: 10,
+        loops: 4,
     };
 
     play(exercise);

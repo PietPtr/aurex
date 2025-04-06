@@ -4,7 +4,7 @@ use crate::{
     midi,
     random::RandomThings,
     sequence::{Play, Rhythm, Sequence},
-    theory::{scales, Interval},
+    theory::{intervals::Interval, scales},
 };
 
 use super::Exercise;
