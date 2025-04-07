@@ -1,9 +1,33 @@
 use crate::{
-    drums::METRONOME_TICK,
+    drums::{self, METRONOME_TICK},
     sequence::{Play, Rhythm, Sequence},
 };
 
 use super::Metronome;
+
+pub struct TickEveryBeatMetronome {}
+
+impl Metronome for TickEveryBeatMetronome {
+    fn generate(bpm: f64) -> Sequence {
+        drums::metronome(bpm)
+    }
+}
+
+pub struct EmphasisOneMetronome {}
+
+impl Metronome for EmphasisOneMetronome {
+    fn generate(bpm: f64) -> Sequence {
+        drums::metronome_emphasis(bpm)
+    }
+}
+
+pub struct TwoAndFourMetronome {}
+
+impl Metronome for TwoAndFourMetronome {
+    fn generate(bpm: f64) -> Sequence {
+        drums::metronome_backbeat(bpm)
+    }
+}
 
 pub struct OffbeatMetronome {}
 

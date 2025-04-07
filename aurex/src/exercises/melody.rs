@@ -46,7 +46,7 @@ impl<const S: usize, const R: usize> Default for MelodyExercise<S, R> {
 }
 
 impl<const S: usize, const R: usize> Exercise for MelodyExercise<S, R> {
-    fn generate(&self) -> Sequence {
+    fn generate(&mut self) -> Sequence {
         let mut sequence = Sequence::new(self.bpm);
         // TODO: some sort of utility that allows scales to be drawn from indefinitely, maybe as an iterator with 2 directions?
         let scale = scales::scale(self.root, &self.scale);

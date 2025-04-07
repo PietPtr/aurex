@@ -15,7 +15,7 @@ pub struct DiatonicChordExercise {
 }
 
 impl Exercise for DiatonicChordExercise {
-    fn generate(&self) -> Sequence {
+    fn generate(&mut self) -> Sequence {
         let mut sequence = Sequence::new(self.bpm);
         let scale = scales::scale(self.root, &self.scale);
 

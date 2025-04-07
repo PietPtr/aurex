@@ -1,6 +1,5 @@
 use std::{
     collections::VecDeque,
-    fmt,
     time::{Duration, Instant, SystemTime},
 };
 
@@ -248,7 +247,7 @@ pub struct SequencedNote {
 
 impl SequencedNote {}
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub enum Play {
     Rest,
     Note(wmidi::Note),
@@ -402,16 +401,6 @@ impl Play {
 
     pub fn g_sharp(octave: i8) -> Self {
         note!(octave, GSharp0)
-    }
-}
-
-impl fmt::Debug for Play {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Play::Rest => f.write_str("Rest"),
-            Play::Note(note) => f.debug_tuple("Note").field(note).finish(),
-            Play::RandomNote(notes) => f.debug_tuple("RandomNote").field(notes).finish(),
-        }
     }
 }
 

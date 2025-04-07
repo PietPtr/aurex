@@ -1,7 +1,7 @@
 use aurex::{
     drums::{self, metronome_emphasis},
     exercises::{play, Exercise},
-    metronome::{emphasis_one::EmphasisOneMetronome, two_and_four::TwoAndFourMetronome, Metronome},
+    metronome::{metronomes::TickEveryBeatMetronome, metronomes::TwoAndFourMetronome, Metronome},
     midi,
     sequence::Sequence,
 };
@@ -17,7 +17,7 @@ pub struct MetronomeExercise<M: Metronome> {
 }
 
 impl<M: Metronome> Exercise for MetronomeExercise<M> {
-    fn generate(&self) -> aurex::sequence::Sequence {
+    fn generate(&mut self) -> aurex::sequence::Sequence {
         let count = if self.countoff {
             drums::count_off(self.bpm)
         } else {
@@ -57,11 +57,26 @@ fn warmup_metronome() {
 
 #[test]
 fn metronome() {
-    let bpm = 118.;
+    let bpm = 70.;
 
     let exercise = MetronomeExercise {
-        metronome: EmphasisOneMetronome {},
-        countoff: true,
+        // metronome: EmphasisOneMetronome {},
+        metronome: TickEveryBeatMetronome {},
+        countoff: false,
+        loops: 1000,
+        bpm,
+    };
+
+    play(exercise);
+}
+
+#[test]
+fn concentration_metronome() {
+    let bpm: f64 = rand::random_range(23f64..29f64);
+
+    let exercise = MetronomeExercise {
+        metronome: TickEveryBeatMetronome {},
+        countoff: false,
         loops: 1000,
         bpm,
     };

@@ -1,6 +1,6 @@
 use aurex::{
     exercises::{melody::MelodyExercise, play},
-    metronome::backbeat::BackbeatMetronome,
+    metronome::{drummer::BackbeatDrummer, metronomes::EmphasisOneMetronome},
     midi,
     player::playonce::PlayOnce,
     random::RandomThings,
@@ -29,18 +29,18 @@ fn melody() {
                     vec![Rhythm::Eighth],
                     vec![Rhythm::Eighth, Rhythm::Eighth],
                     vec![Rhythm::DottedQuarter],
-                    vec![
-                        Rhythm::QuarterTriplet,
-                        Rhythm::QuarterTriplet,
-                        Rhythm::QuarterTriplet,
-                    ],
+                    // vec![
+                    //     Rhythm::QuarterTriplet,
+                    //     Rhythm::QuarterTriplet,
+                    //     Rhythm::QuarterTriplet,
+                    // ],
                 ],
-                weights: [50, 50, 15, 2, 5],
+                weights: [50, 50, 15, 2],
             },
             amount_of_beats: 2.5,
             ..MelodyExercise::default()
         },
-        metronome: BackbeatMetronome {},
+        metronome: BackbeatDrummer {},
         loops: 10,
     };
 
@@ -52,7 +52,7 @@ fn fast_no_leaps() {
     let exercise = PlayOnce {
         exercise: MelodyExercise {
             bpm: 100.,
-            root: wmidi::Note::F1,
+            root: wmidi::Note::Gb1,
             scale: scales::TWO_OCTAVE_MAJOR.to_vec(),
             steps: RandomThings {
                 things: [0, 1],
@@ -74,7 +74,7 @@ fn fast_no_leaps() {
             instrument: midi::GRAND_PIANO,
             ..MelodyExercise::default()
         },
-        metronome: BackbeatMetronome {},
+        metronome: EmphasisOneMetronome {},
         loops: 10,
     };
 
@@ -102,7 +102,7 @@ fn short_ascending() {
             amount_of_beats: 3.,
             ..MelodyExercise::default()
         },
-        metronome: BackbeatMetronome {},
+        metronome: BackbeatDrummer {},
         loops: 10,
     };
 
@@ -134,7 +134,7 @@ fn four_beats() {
             amount_of_beats: 4.,
             ..MelodyExercise::default()
         },
-        metronome: BackbeatMetronome {},
+        metronome: BackbeatDrummer {},
         loops: 4,
     };
 

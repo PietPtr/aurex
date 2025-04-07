@@ -14,7 +14,7 @@ pub struct InScaleExercise {
 }
 
 impl Exercise for InScaleExercise {
-    fn generate(&self) -> Sequence {
+    fn generate(&mut self) -> Sequence {
         let scale = scales::scale(self.root, scales::MAJOR_PENTATONIC);
         let mut sequence = Sequence::new(self.bpm);
         sequence.add_to_end(Play::RandomNote(scale.clone()).with_duration(Rhythm::Quarter));
@@ -44,7 +44,7 @@ pub struct InScaleWithRangeExercise {
 }
 
 impl Exercise for InScaleWithRangeExercise {
-    fn generate(&self) -> Sequence {
+    fn generate(&mut self) -> Sequence {
         let notes = scales::scale_range(self.root, &self.scale, self.range_start, self.range_end);
 
         let mut sequence = Sequence::new(self.bpm);

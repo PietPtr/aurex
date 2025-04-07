@@ -4,7 +4,7 @@ use aurex::{
         known_root::{self, KnownRootExercise},
         play,
     },
-    metronome::emphasis_one::EmphasisOneMetronome,
+    metronome::metronomes::EmphasisOneMetronome,
     player::playtwice::PlayTwice,
     theory::{intervals::Interval, scales},
 };

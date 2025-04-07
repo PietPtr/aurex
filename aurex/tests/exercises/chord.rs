@@ -1,6 +1,6 @@
 use aurex::{
     exercises::{chords::DiatonicChordExercise, play},
-    metronome::backbeat::BackbeatMetronome,
+    metronome::drummer::BackbeatDrummer,
     player::playonce::PlayOnce,
     theory::scales,
 };
@@ -15,7 +15,7 @@ fn diatonic_chords() {
             root: Note::C3,
             scale: scales::MAJOR.to_vec(),
         },
-        metronome: BackbeatMetronome {},
+        metronome: BackbeatDrummer {},
         loops: 10,
     };
 

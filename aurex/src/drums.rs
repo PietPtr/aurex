@@ -63,6 +63,44 @@ pub fn basic_backbeat(bpm: f64) -> Sequence {
     hats.combine_simultaneous(kick).combine_simultaneous(snare)
 }
 
+pub fn sixteenths_drums(bpm: f64) -> Sequence {
+    let mut hats = Sequence::new(bpm);
+    let mut kick = Sequence::new(bpm);
+    let mut snare = Sequence::new(bpm);
+
+    for _ in 0..16 {
+        hats.add_to_end(CLOSED_HAT.with_duration(Rhythm::Sixteenth));
+    }
+
+    for _ in 0..2 {
+        kick.add_to_end(KICK.with_duration(Rhythm::Half));
+    }
+
+    snare.add_beat_offset(Rhythm::Quarter.beats(), SNARE.with_duration(Rhythm::Half));
+    snare.add_to_end(SNARE.with_duration(Rhythm::Quarter));
+
+    hats.combine_simultaneous(kick).combine_simultaneous(snare)
+}
+
+pub fn twelveeight_drums(bpm: f64) -> Sequence {
+    let mut hats = Sequence::new(bpm);
+    let mut kick = Sequence::new(bpm);
+    let mut snare = Sequence::new(bpm);
+
+    for _ in 0..12 {
+        hats.add_to_end(CLOSED_HAT.with_duration(Rhythm::QuarterTriplet));
+    }
+
+    for _ in 0..2 {
+        kick.add_to_end(KICK.with_duration(Rhythm::Half));
+    }
+
+    snare.add_beat_offset(Rhythm::Quarter.beats(), SNARE.with_duration(Rhythm::Half));
+    snare.add_to_end(SNARE.with_duration(Rhythm::Quarter));
+
+    hats.combine_simultaneous(kick).combine_simultaneous(snare)
+}
+
 pub fn metronome(bpm: f64) -> Sequence {
     let mut sequence = Sequence::new(bpm);
 

@@ -40,7 +40,7 @@ pub struct KnownRootExercise {
 }
 
 impl Exercise for KnownRootExercise {
-    fn generate(&self) -> Sequence {
+    fn generate(&mut self) -> Sequence {
         let scale = match self.direction {
             Direction::Ascending => scales::scale(self.root, &self.scale),
             Direction::Descending => scales::descending_scale(self.root, &self.scale),

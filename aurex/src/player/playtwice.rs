@@ -8,7 +8,7 @@ pub struct PlayTwice<E: Exercise, M: Metronome> {
 }
 
 impl<E: Exercise, M: Metronome> Exercise for PlayTwice<E, M> {
-    fn generate(&self) -> Sequence {
+    fn generate(&mut self) -> Sequence {
         let count_off = drums::count_off(self.bpm());
 
         let metronome = M::generate(self.bpm()).r#loop(self.loops * 2);
