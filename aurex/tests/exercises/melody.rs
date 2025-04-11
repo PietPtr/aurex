@@ -11,6 +11,7 @@ use aurex::{
 
 #[test]
 fn melody() {
+    panic!("Broken, starts playing at the wrong time");
     let mut scale = scales::TWO_OCTAVE_MAJOR_PENTATONIC.to_vec();
     scale.push(Interval::Octave);
 
@@ -29,18 +30,18 @@ fn melody() {
                     vec![Rhythm::Eighth],
                     vec![Rhythm::Eighth, Rhythm::Eighth],
                     vec![Rhythm::DottedQuarter],
-                    // vec![
-                    //     Rhythm::QuarterTriplet,
-                    //     Rhythm::QuarterTriplet,
-                    //     Rhythm::QuarterTriplet,
-                    // ],
+                    vec![
+                        Rhythm::QuarterTriplet,
+                        Rhythm::QuarterTriplet,
+                        Rhythm::QuarterTriplet,
+                    ],
                 ],
-                weights: [50, 50, 15, 2],
+                weights: [50, 50, 15, 2, 2],
             },
             amount_of_beats: 2.5,
             ..MelodyExercise::default()
         },
-        metronome: BackbeatDrummer {},
+        metronome: EmphasisOneMetronome {},
         loops: 10,
     };
 

@@ -4,6 +4,7 @@ pub mod chords;
 pub mod in_scale;
 pub mod known_root;
 pub mod melody;
+pub mod metronome;
 pub mod rhythm_sweep;
 pub mod variator;
 pub mod walking;

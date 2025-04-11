@@ -82,8 +82,6 @@ impl<const S: usize, const R: usize> Exercise for MelodyExercise<S, R> {
             }
         }
 
-        sequence.add_to_end(Play::Rest.with_duration(Rhythm::Beats(8. - beats)));
-
         sequence
     }
 

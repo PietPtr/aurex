@@ -1,41 +1,11 @@
-use aurex::{
-    drums::{self, metronome_emphasis},
-    exercises::{play, Exercise},
-    metronome::{metronomes::TickEveryBeatMetronome, metronomes::TwoAndFourMetronome, Metronome},
-    midi,
-    sequence::Sequence,
-};
 use rand::Rng;
 
-// TODO: if no qsynth, start it
-
-pub struct MetronomeExercise<M: Metronome> {
-    pub metronome: M,
-    pub bpm: f64,
-    pub loops: usize,
-    pub countoff: bool,
-}
-
-impl<M: Metronome> Exercise for MetronomeExercise<M> {
-    fn generate(&mut self) -> aurex::sequence::Sequence {
-        let count = if self.countoff {
-            drums::count_off(self.bpm)
-        } else {
-            Sequence::new(self.bpm)
-        };
-
-        count.combine_at_end(M::generate(self.bpm).r#loop(self.loops))
-    }
-
-    fn instrument(&self) -> wmidi::U7 {
-        // TODO: ..channels?
-        midi::FINGERED_BASS
-    }
-
-    fn bpm(&self) -> f64 {
-        self.bpm
-    }
-}
+use aurex::metronome::metronomes::{TickEveryBeatMetronome, TwoAndFourMetronome};
+use aurex::{
+    drums::metronome_emphasis,
+    exercises::{metronome::MetronomeExercise, play},
+    midi,
+};
 
 /// Clicks on 2 and 4 at a random tempo between 55 and 68 BPM
 #[test]
@@ -57,7 +27,7 @@ fn warmup_metronome() {
 
 #[test]
 fn metronome() {
-    let bpm = 70.;
+    let bpm = 65.;
 
     let exercise = MetronomeExercise {
         // metronome: EmphasisOneMetronome {},
