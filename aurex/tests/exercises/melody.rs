@@ -1,5 +1,10 @@
+use std::time::{SystemTime, UNIX_EPOCH};
+
 use aurex::{
-    exercises::{melody::MelodyExercise, play},
+    exercises::{
+        melody::{MelodyExercise, MelodyExerciseSettings},
+        play,
+    },
     metronome::{drummer::BackbeatDrummer, metronomes::EmphasisOneMetronome},
     midi,
     player::playonce::PlayOnce,
@@ -9,20 +14,27 @@ use aurex::{
     theory::{intervals::Interval, scales},
 };
 
+// TODO: move to library
+fn day_seed() -> u64 {
+    let now = SystemTime::now();
+    let duration = now.duration_since(UNIX_EPOCH).unwrap();
+    duration.as_secs() / 86_400
+}
+
 #[test]
 fn melody() {
-    panic!("Broken, starts playing at the wrong time");
-    let mut scale = scales::TWO_OCTAVE_MAJOR_PENTATONIC.to_vec();
-    scale.push(Interval::Octave);
+    let mut scale = scales::TWO_OCTAVE_MAJOR.to_vec();
+    scale.push(Interval::TwoOctaves);
 
     let exercise = PlayOnce {
-        exercise: MelodyExercise {
+        exercise: MelodyExercise::new(MelodyExerciseSettings {
             bpm: 65.,
             root: wmidi::Note::A1,
+            seed: day_seed(),
             scale,
             steps: RandomThings {
                 things: [-2, -1, 0, 1, 2, 3],
-                weights: [3, 10, 10, 40, 40, 0],
+                weights: [3, 40, 10, 10, 60, 20],
             },
             rhythms: RandomThings {
                 things: [
@@ -39,8 +51,8 @@ fn melody() {
                 weights: [50, 50, 15, 2, 2],
             },
             amount_of_beats: 2.5,
-            ..MelodyExercise::default()
-        },
+            ..MelodyExerciseSettings::default()
+        }),
         metronome: EmphasisOneMetronome {},
         loops: 10,
     };
@@ -51,7 +63,7 @@ fn melody() {
 #[test]
 fn fast_no_leaps() {
     let exercise = PlayOnce {
-        exercise: MelodyExercise {
+        exercise: MelodyExercise::new(MelodyExerciseSettings {
             bpm: 100.,
             root: wmidi::Note::Gb1,
             scale: scales::TWO_OCTAVE_MAJOR.to_vec(),
@@ -73,8 +85,9 @@ fn fast_no_leaps() {
             },
             amount_of_beats: 3.,
             instrument: midi::GRAND_PIANO,
-            ..MelodyExercise::default()
-        },
+            seed: day_seed(),
+            ..MelodyExerciseSettings::default()
+        }),
         metronome: EmphasisOneMetronome {},
         loops: 10,
     };
@@ -88,7 +101,7 @@ fn fast_no_leaps() {
 #[test]
 fn short_ascending() {
     let exercise = PlayOnce {
-        exercise: MelodyExercise {
+        exercise: MelodyExercise::new(MelodyExerciseSettings {
             bpm: 120.,
             root: wmidi::Note::F1,
             scale: scales::MAJOR.to_vec(),
@@ -101,8 +114,9 @@ fn short_ascending() {
                 weights: [1],
             },
             amount_of_beats: 3.,
-            ..MelodyExercise::default()
-        },
+            seed: day_seed(),
+            ..MelodyExerciseSettings::default()
+        }),
         metronome: BackbeatDrummer {},
         loops: 10,
     };
@@ -115,7 +129,7 @@ fn short_ascending() {
 #[test]
 fn four_beats() {
     let exercise = PlayOnce {
-        exercise: MelodyExercise {
+        exercise: MelodyExercise::new(MelodyExerciseSettings {
             bpm: 70.,
             root: wmidi::Note::C2,
             scale: scales::MAJOR.to_vec(),
@@ -133,8 +147,8 @@ fn four_beats() {
                 weights: [1],
             },
             amount_of_beats: 4.,
-            ..MelodyExercise::default()
-        },
+            ..MelodyExerciseSettings::default()
+        }),
         metronome: BackbeatDrummer {},
         loops: 4,
     };

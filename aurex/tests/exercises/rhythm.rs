@@ -1,6 +1,6 @@
 use aurex::{
     exercises::{
-        melody::MelodyExercise,
+        melody::{MelodyExercise, MelodyExerciseSettings},
         play,
         rhythm_sweep::{RhythmSweepExercise, RhythmSweepExerciseDef},
     },
@@ -17,7 +17,7 @@ use aurex::{
 #[test]
 fn random_sixteenths() {
     let exercise = PlayOnce {
-        exercise: MelodyExercise {
+        exercise: MelodyExercise::new(MelodyExerciseSettings {
             bpm: 120.,
             root: wmidi::Note::A1,
             scale: scales::MAJOR.to_vec(),
@@ -53,8 +53,8 @@ fn random_sixteenths() {
             },
             amount_of_beats: 1.,
             rest_probability: 0.2,
-            ..MelodyExercise::default()
-        },
+            ..MelodyExerciseSettings::default()
+        }),
         metronome: TickEveryBeatMetronome {},
         loops: 10,
     };

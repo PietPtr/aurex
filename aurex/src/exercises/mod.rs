@@ -1,4 +1,4 @@
-use crate::{midi, sequence::Sequence};
+use crate::{midi, qsynth, sequence::Sequence};
 
 pub mod chords;
 pub mod in_scale;
@@ -16,6 +16,7 @@ pub trait Exercise {
 }
 
 pub fn play<E: Exercise>(mut exercise: E) {
+    qsynth::ensure_qsynth().ok();
     let mut seq = exercise.generate();
 
     let mut conn = midi::open_midi_connection("FLUID Synth");

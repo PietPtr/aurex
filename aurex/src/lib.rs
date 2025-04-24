@@ -3,6 +3,7 @@ pub mod exercises;
 pub mod metronome;
 pub mod midi;
 pub mod player;
+pub mod qsynth;
 pub mod random;
 pub mod sequence;
 pub mod theory;

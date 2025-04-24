@@ -21,7 +21,10 @@ impl<E: Exercise, M: Metronome> Exercise for PlayOnce<E, M> {
         for _ in 0..self.loops {
             let sequence = self.exercise.generate();
             let sequence_length = sequence.length_in_beats();
-            assert_eq!(sequence_length % 4., 0.); // TODO: doesn't hold for all sequences, might become a problem?
+            // assert_eq!(sequence_length % 4., 0.); // TODO: doesn't hold for all sequences, might become a problem?
+            let rem = sequence_length % 4.0;
+            assert!(rem.abs() < 1e-6 || (4.0 - rem).abs() < 1e-6);
+
             total_sequence = total_sequence.combine_at_end(sequence);
 
             let mut empty_sequence = Sequence::new(self.bpm());

@@ -1,3 +1,4 @@
+use aurex::metronome::drummer::BackbeatDrummer;
 use rand::Rng;
 
 use aurex::metronome::metronomes::{TickEveryBeatMetronome, TwoAndFourMetronome};
@@ -27,7 +28,7 @@ fn warmup_metronome() {
 
 #[test]
 fn metronome() {
-    let bpm = 65.;
+    let bpm = 75.;
 
     let exercise = MetronomeExercise {
         // metronome: EmphasisOneMetronome {},
@@ -47,7 +48,7 @@ fn concentration_metronome() {
     let exercise = MetronomeExercise {
         metronome: TickEveryBeatMetronome {},
         countoff: false,
-        loops: 1000,
+        loops: 30,
         bpm,
     };
 

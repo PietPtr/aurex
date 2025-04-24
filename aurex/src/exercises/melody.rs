@@ -1,17 +1,27 @@
-use rand::Rng;
+use rand::{rngs::StdRng, Rng, SeedableRng};
 
 use crate::{
     midi,
-    random::RandomThings,
+    random::{RandomThings, SeededRandomThings},
     sequence::{Play, Rhythm, Sequence},
     theory::{intervals::Interval, scales},
 };
 
 use super::Exercise;
 
-/// Generates a melody of at most 3 beats consisting of querter and eighth notes and triplets
-/// Never leaping more than 2 steps in the scale
 pub struct MelodyExercise<const S: usize, const R: usize> {
+    bpm: f64,
+    root: wmidi::Note,
+    scale: Vec<Interval>,
+    steps: SeededRandomThings<isize, S>,
+    rhythms: SeededRandomThings<Vec<Rhythm>, R>,
+    rest_probability: f64,
+    amount_of_beats: f64,
+    instrument: wmidi::U7,
+    rng: StdRng,
+}
+
+pub struct MelodyExerciseSettings<const S: usize, const R: usize> {
     pub bpm: f64,
     pub root: wmidi::Note,
     pub scale: Vec<Interval>,
@@ -21,9 +31,38 @@ pub struct MelodyExercise<const S: usize, const R: usize> {
     /// Length of the melody in beats
     pub amount_of_beats: f64,
     pub instrument: wmidi::U7,
+    pub seed: u64,
 }
 
-impl<const S: usize, const R: usize> Default for MelodyExercise<S, R> {
+impl<const S: usize, const R: usize> MelodyExercise<S, R> {
+    pub fn new(
+        MelodyExerciseSettings {
+            bpm,
+            root,
+            scale,
+            steps,
+            rhythms,
+            rest_probability,
+            amount_of_beats,
+            instrument,
+            seed,
+        }: MelodyExerciseSettings<S, R>,
+    ) -> Self {
+        Self {
+            bpm,
+            root,
+            scale,
+            steps: steps.with_seed(seed),
+            rhythms: rhythms.with_seed(seed),
+            rest_probability,
+            amount_of_beats,
+            instrument,
+            rng: StdRng::seed_from_u64(seed),
+        }
+    }
+}
+
+impl<const S: usize, const R: usize> Default for MelodyExerciseSettings<S, R> {
     fn default() -> Self {
         const ARRAY_REPEAT_VALUE: Vec<Rhythm> = Vec::new();
         Self {
@@ -41,6 +80,7 @@ impl<const S: usize, const R: usize> Default for MelodyExercise<S, R> {
             rest_probability: 0.0,
             amount_of_beats: 4.0,
             instrument: midi::FINGERED_BASS,
+            seed: 0,
         }
     }
 }
@@ -60,7 +100,7 @@ impl<const S: usize, const R: usize> Exercise for MelodyExercise<S, R> {
             while let Some(rhythm) = rhythms.pop() {
                 let note = scale[note_index];
 
-                let note = if rand::rng().random::<f64>() < self.rest_probability {
+                let note = if self.rng.random::<f64>() < self.rest_probability {
                     Play::Rest.with_duration(rhythm.clone())
                 } else {
                     Play::Note(note).with_duration(rhythm.clone())
@@ -80,6 +120,14 @@ impl<const S: usize, const R: usize> Exercise for MelodyExercise<S, R> {
             if note_index == scale.len() - 1 {
                 note_index = 0;
             }
+        }
+
+        if sequence.length_in_beats() <= 4. {
+            sequence.add_to_end(
+                Play::Rest.with_duration(Rhythm::Beats(4. - sequence.length_in_beats())),
+            );
+        } else {
+            panic!("TODO: melodies can be at most 4 beats now");
         }
 
         sequence
