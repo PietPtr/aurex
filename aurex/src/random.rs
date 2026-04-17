@@ -1,6 +1,6 @@
 use rand::{
     distr::{weighted::WeightedIndex, Distribution},
-    rngs::{StdRng, ThreadRng},
+    rngs::StdRng,
     SeedableRng,
 };
 

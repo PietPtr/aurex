@@ -1,5 +1,6 @@
 use crate::{midi, qsynth, sequence::Sequence};
 
+pub mod arpeggios;
 pub mod chords;
 pub mod in_scale;
 pub mod known_root;
@@ -10,6 +11,7 @@ pub mod variator;
 pub mod walking;
 
 pub trait Exercise {
+    /// Generates the full sequence for the whole exercise
     fn generate(&mut self) -> Sequence;
     fn instrument(&self) -> wmidi::U7;
     fn bpm(&self) -> f64;

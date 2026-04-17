@@ -15,6 +15,7 @@ impl<E: Exercise, M: Metronome> Exercise for PlayOnce<E, M> {
     fn generate(&mut self) -> Sequence {
         let count_off = drums::count_off(self.bpm());
 
+        // TODO: make metronome compatible with exercises that are not 4 beats long per generate call
         let metronome = M::generate(self.bpm()).r#loop(self.loops * 2);
         let mut total_sequence = Sequence::new(self.bpm());
 

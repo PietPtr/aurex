@@ -1,4 +1,3 @@
-use aurex::metronome::drummer::BackbeatDrummer;
 use rand::Rng;
 
 use aurex::metronome::metronomes::{TickEveryBeatMetronome, TwoAndFourMetronome};
@@ -8,11 +7,12 @@ use aurex::{
     midi,
 };
 
-/// Clicks on 2 and 4 at a random tempo between 55 and 68 BPM
+/// Clicks on 2 and 4 at a random tempo
 #[test]
 fn warmup_metronome() {
     let mut rng = rand::rng();
-    let bpm: f64 = rng.random_range(55f64..=68f64);
+    let bpm: f64 = rng.random_range(63f64..=75f64);
+    // let bpm = 80.;
 
     println!("Two and Four metronome at ~{bpm:.0}BPM");
 
@@ -28,10 +28,12 @@ fn warmup_metronome() {
 
 #[test]
 fn metronome() {
-    let bpm = 75.;
+    let mut rng = rand::rng();
+    let bpm: f64 = rng.random_range(63f64..=75f64);
+    // let bpm = 80.;
 
     let exercise = MetronomeExercise {
-        // metronome: EmphasisOneMetronome {},
+        // metronome: aurex::metronome::metronomes::EmphasisOneMetronome {},
         metronome: TickEveryBeatMetronome {},
         countoff: false,
         loops: 1000,
@@ -48,7 +50,7 @@ fn concentration_metronome() {
     let exercise = MetronomeExercise {
         metronome: TickEveryBeatMetronome {},
         countoff: false,
-        loops: 30,
+        loops: 15,
         bpm,
     };
 

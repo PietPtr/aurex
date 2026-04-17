@@ -1,3 +1,4 @@
+mod arpeggios;
 mod chord;
 mod intervals;
 mod melody;
